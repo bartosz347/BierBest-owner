@@ -1,0 +1,16 @@
+* {
+	-fx-font-family:"Source Sans Pro";
+	/*-fx-text-fill:#333333;*/
+}
+
+.labels {
+	-fx-font-family:"Source Sans Pro";
+	-fx-font-weight:bold;
+}
+
+.section-title {
+	-fx-font-family:"Source Sans Pro";
+	-fx-text-fill:#3f3f3f;	
+	-fx-font-size:30px;	
+
+}
