@@ -3,7 +3,7 @@ import javafx.beans.property.StringProperty;
 
 public class ClientViewModel {
 
-    private ClientDataLoader clientDataLoader = new ClientDataLoader();
+    private ClientsLoaderService clientsLoaderService = new ClientsLoaderService();
 
     private ClientModel client;
 
@@ -11,7 +11,7 @@ public class ClientViewModel {
     private StringProperty city = new SimpleStringProperty(this,"city","");
 
     public ClientViewModel() {
-        this.client = clientDataLoader.loadData();
+        this.client = clientsLoaderService.loadData();
         setName(client.getFirstName() + " " + client.getLastName());
         setCity(client.getCity());
     }

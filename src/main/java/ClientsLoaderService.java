@@ -1,7 +1,7 @@
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public class ClientDataLoader {
+public class ClientsLoaderService {
 
     public ClientModel loadData() {
         ClientModel client = null;

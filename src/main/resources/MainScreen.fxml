@@ -279,12 +279,12 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <TableView VBox.vgrow="ALWAYS">
+                  <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS">
                     <columns>
-                      <TableColumn prefWidth="193.0" text="order id" />
+                      <TableColumn fx:id="orderIdColumn" prefWidth="193.0" text="order id" />
                       <TableColumn prefWidth="287.0" text="client name" />
                         <TableColumn prefWidth="255.0" text="order date" />
-                        <TableColumn prefWidth="152.0" text="status" />
+                        <TableColumn fx:id="orderStatusColumn" prefWidth="152.0" text="status" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

@@ -1,4 +1,6 @@
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,9 +15,16 @@ import java.util.Random;
 
 public class Main extends Application {
 
+
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
+        Parent root = fxmlLoader.load();
+
+        MainScreenView m = fxmlLoader.getController(); // todo obsolete
+
+
         primaryStage.getIcons().add(new Image("images/icon.png"));
         primaryStage.setTitle("BierBEST backoffice");
         primaryStage.setScene(new Scene(root, 650, 600));
@@ -26,8 +35,6 @@ public class Main extends Application {
 
     public static EntityManagerFactory sessionFactory;
     public static void main(String[] args) {
-
-        // Hibernate
 
         // Create an EMF
         sessionFactory = Persistence.createEntityManagerFactory( "BierBest-owner" );
@@ -41,6 +48,20 @@ public class Main extends Application {
             client.setLastName("Kowalski");
             client.setCity("New York");
             entityManager.persist(client);
+            entityManager.getTransaction().commit();
+            entityManager.close();
+
+
+            entityManager = sessionFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            OrderModel order = new OrderModel();
+            order.setStatus("status1");
+            entityManager.persist(order);
+
+            order = new OrderModel();
+            order.setStatus("status2");
+            entityManager.persist(order);
+
             entityManager.getTransaction().commit();
             entityManager.close();
 
