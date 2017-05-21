@@ -72,3 +72,5 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+persistence.xml
