@@ -1,3 +1,7 @@
+package BierBest.client;
+
+import BierBest.Main;
+
 import javax.persistence.EntityManager;
 import java.util.List;
 

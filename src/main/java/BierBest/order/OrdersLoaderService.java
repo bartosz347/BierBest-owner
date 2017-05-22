@@ -1,3 +1,6 @@
+package BierBest.order;
+
+import BierBest.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -11,7 +14,7 @@ public class OrdersLoaderService {
         entityManager.getTransaction().begin();
         List<OrderModel> result = entityManager.createQuery( "from product_order", OrderModel.class ).getResultList();
         for ( OrderModel order : result ) {
-            ordersData.add(new OrderViewModel(order.getId(), order.getStatus()));
+            ordersData.add(new OrderViewModel(order));
         }
         entityManager.getTransaction().commit();
         entityManager.close();

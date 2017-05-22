@@ -1,41 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckMenuItem?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Hyperlink?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="561.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainScreenView">
+<VBox prefHeight="561.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BierBest.MainScreenView">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="File">
                <items>
-                  <MenuItem mnemonicParsing="false" text="open client list" />
+                  <MenuItem mnemonicParsing="false" text="open BierBest.client list" />
                </items></Menu>
         <Menu mnemonicParsing="false" text="Options">
           <items>
@@ -85,7 +66,7 @@
                                           <Insets bottom="10.0" left="5.0" right="20.0" top="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label alignment="CENTER" layoutX="18.0" layoutY="15.0" styleClass="labels" text="street" GridPane.rowIndex="2">
+                                    <Label alignment="CENTER" layoutX="18.0" layoutY="15.0" styleClass="labels" text="registration date" GridPane.rowIndex="2">
                                        <opaqueInsets>
                                           <Insets />
                                        </opaqueInsets>
@@ -115,7 +96,7 @@
                                           <Insets bottom="10.0" left="5.0" right="20.0" top="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label alignment="CENTER" layoutX="18.0" layoutY="92.0" styleClass="labels" text="zip code" GridPane.rowIndex="4">
+                                    <Label alignment="CENTER" layoutX="18.0" layoutY="92.0" styleClass="labels" text="phone number" GridPane.rowIndex="4">
                                        <opaqueInsets>
                                           <Insets />
                                        </opaqueInsets>
@@ -126,7 +107,7 @@
                                           <Insets bottom="10.0" left="5.0" right="20.0" top="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label layoutX="232.0" layoutY="23.0" text="133 Lynchburg Highway" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                    <Label fx:id="clientRegistrationDateLabel" layoutX="232.0" layoutY="23.0" text="133 Lynchburg Highway" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
@@ -136,13 +117,13 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
                                     </Label>
-                                    <Label layoutX="185.0" layoutY="60.0" text="VA 24501" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                    <Label fx:id="clientPhoneNumberLabel" layoutX="185.0" layoutY="60.0" text="VA 24501" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
                                     </Label>
-                                    <Label styleClass="section-title" text="CLIENT" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                    <Label alignment="CENTER" layoutX="18.0" layoutY="170.0" styleClass="labels" text="client's action" GridPane.rowIndex="5">
+                                    <Label styleClass="section-title" text="client info" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                    <Label alignment="CENTER" layoutX="18.0" layoutY="170.0" styleClass="labels" text="client's side status" GridPane.rowIndex="5">
                                        <opaqueInsets>
                                           <Insets />
                                        </opaqueInsets>
@@ -153,7 +134,7 @@
                                           <Insets bottom="10.0" left="5.0" right="20.0" top="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label layoutX="144.0" layoutY="175.0" text="new request" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                    <Label fx:id="clientSideStatusLabel" layoutX="144.0" layoutY="175.0" text="new request" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
@@ -165,9 +146,14 @@
                               </GridPane>
                               <HBox alignment="CENTER_RIGHT">
                                  <children>
-                                    <Button alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="edit">
+                                    <Button alignment="CENTER" mnemonicParsing="false" text="edit">
                                        <HBox.margin>
-                                          <Insets right="52.0" />
+                                          <Insets right="10.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button alignment="CENTER" defaultButton="true" layoutX="222.0" layoutY="10.0" mnemonicParsing="false" text="show details">
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
                                        </HBox.margin>
                                     </Button>
                                  </children>
@@ -175,7 +161,7 @@
                                     <Insets />
                                  </opaqueInsets>
                                  <VBox.margin>
-                                    <Insets />
+                                    <Insets top="22.0" />
                                  </VBox.margin>
                               </HBox>
                            </children>
@@ -204,7 +190,7 @@
                                           <Insets bottom="10.0" left="5.0" right="20.0" top="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label text="Królewskie" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                    <Label fx:id="beerNameLabel" text="Królewskie" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
@@ -225,9 +211,9 @@
                                           <Insets bottom="10.0" left="5.0" right="20.0" top="10.0" />
                                        </padding>
                                     </Label>
-                                    <TextField maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="\$15.00" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <ComboBox promptText="choose" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                    <TextField fx:id="beerPriceField" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="\$15.00" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <ComboBox fx:id="beerStatusBox" promptText="choose" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <ImageView fx:id="beerImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                        <image>
                                           <Image url="@images/beer_placeholder.jpg" />
                                        </image>
@@ -235,7 +221,7 @@
                                           <Insets />
                                        </GridPane.margin>
                                     </ImageView>
-                                    <Hyperlink text="https://untappd/najlepszePiwo" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Hyperlink fx:id="beerURLHyperlink" text="https://untappd/najlepszePiwo" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <Button mnemonicParsing="false" text="&gt;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                     <Button mnemonicParsing="false" text="&lt;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     <Label styleClass="labels" text="2 of 3 " GridPane.columnIndex="2" GridPane.rowIndex="3" />
@@ -259,7 +245,7 @@
                               <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
                                  <children>
                                     <Button alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="update" />
-                                    <Region prefHeight="24.0" prefWidth="27.0" />
+                                    <Region prefHeight="24.0" prefWidth="10.0" />
                                     <Button alignment="CENTER" cancelButton="true" mnemonicParsing="false" text="reset">
                                        <HBox.margin>
                                           <Insets right="7.0" />
@@ -282,8 +268,8 @@
                   <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS">
                     <columns>
                       <TableColumn fx:id="orderIdColumn" prefWidth="193.0" text="order id" />
-                      <TableColumn prefWidth="287.0" text="client name" />
-                        <TableColumn prefWidth="255.0" text="order date" />
+                      <TableColumn fx:id="clientNameColumn" prefWidth="287.0" text="client name" />
+                        <TableColumn fx:id="orderDateColumn" prefWidth="255.0" text="order date" />
                         <TableColumn fx:id="orderStatusColumn" prefWidth="152.0" text="status" />
                     </columns>
                      <columnResizePolicy>
