@@ -2,8 +2,12 @@ package BierBest;
 
 import BierBest.order.OrderDetailsDisplayViewModel;
 import BierBest.order.OrderViewModel;
+import BierBest.order.OrdersTableViewModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -15,10 +19,11 @@ import java.util.ResourceBundle;
 
 public class MainScreenView implements Initializable {
 
-   // private ClientViewModel clientViewModel = new ClientViewModel();
     private OrdersTableViewModel ordersTableViewModel = new OrdersTableViewModel();
     private OrderDetailsDisplayViewModel orderDetailsDisplayViewModel = new OrderDetailsDisplayViewModel();
 
+    ObservableList<String> shopSideStatuses = FXCollections.<String>observableArrayList(
+            "", "rejected", "price offered", "sent");
 
     @FXML
     private TableView<OrderViewModel> ordersTable;
@@ -30,7 +35,10 @@ public class MainScreenView implements Initializable {
     @FXML
     private TableColumn<OrderViewModel, String> orderDateColumn;
     @FXML
-    private TableColumn<OrderViewModel, String> orderStatusColumn;
+    private TableColumn<OrderViewModel, String> orderStatusClientColumn;
+    @FXML
+    private TableColumn<OrderViewModel, String> orderStatusShopColumn;
+
 
     @FXML
     private Label clientNameLabel;
@@ -52,17 +60,20 @@ public class MainScreenView implements Initializable {
     @FXML
     private TextField beerPriceField;
     @FXML
-    private ComboBox beerStatusBox;
+    private ChoiceBox<String> beerStatusBox;
 
-    Image img;
+    private Image img;
 
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        beerStatusBox.setItems(shopSideStatuses);
+
         orderIdColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         clientNameColumn.setCellValueFactory(cellData -> cellData.getValue().getClientViewModel().nameProperty());
         orderDateColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
-        orderStatusColumn.setCellValueFactory(cellData -> cellData.getValue().statusClientSideProperty());
+        orderStatusClientColumn.setCellValueFactory(cellData -> cellData.getValue().statusClientSideProperty());
+        orderStatusShopColumn.setCellValueFactory(cellData -> cellData.getValue().statusShopSideProperty());
 
         ordersTable.setItems(ordersTableViewModel.getOrdersData());
   /*      ordersTable.getSelectionModel().selectedItemProperty().addListener(
@@ -73,35 +84,44 @@ public class MainScreenView implements Initializable {
            @Override
            public void changed(ObservableValue<? extends OrderViewModel> observable, OrderViewModel oldValue, OrderViewModel newValue) {
                orderDetailsDisplayViewModel.load(newValue);
-               // TODO is binding every time needed ?
-               clientNameLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().nameProperty());
-               clientCityLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().cityProperty());
-               clientRegistrationDateLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().registrationDateProperty());
-               clientPhoneNumberLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().phoneNumberProperty());
-
-               clientSideStatusLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().statusClientSideProperty());
-
-               Image img = new Image(orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL());
-               beerImageView.imageProperty().setValue(img);
-               beerNameLabel.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerName());
-               beerURLHyperlink.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerURL());
-               beerPriceField.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerPrice());
-               // todo beerStatusBox
+               refresh();
            }
        }
         );
 
         //clientNameLabel.textProperty().bindBidirectional(clientViewModel.nameProperty());
 
+        refresh();
 
+
+
+    }
+
+    private void refresh() {
+
+        // TODO is binding every time needed ?
         clientNameLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().nameProperty());
         clientCityLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().cityProperty());
         clientRegistrationDateLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().registrationDateProperty());
         clientPhoneNumberLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().phoneNumberProperty());
+
         clientSideStatusLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().statusClientSideProperty());
 
+        if(!orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL().isEmpty()) {
+            img = new Image(orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL());
+            beerImageView.imageProperty().setValue(img);
+        }
+        beerNameLabel.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerName());
+        beerURLHyperlink.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerURL());
+        beerPriceField.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerPrice());
+        beerStatusBox.setValue(orderDetailsDisplayViewModel.getOrderViewModel().getStatusShopSide());
 
+    }
 
+    @FXML
+    private void handleUpdateOrder(ActionEvent event) {
+        orderDetailsDisplayViewModel.updateOrder(beerStatusBox.getValue());
+        refresh();
     }
 
 

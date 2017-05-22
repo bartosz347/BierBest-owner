@@ -25,6 +25,10 @@ public class ClientViewModel {
 
     public ClientViewModel(ClientModel client) {
         this.client = client;
+        loadDataFromClientModel();
+    }
+
+    public void loadDataFromClientModel() {
         setName(client.getFirstName() + " " + client.getLastName());
         setRegistrationDate(
                 DateFormat.getDateInstance().format(client.getRegistrationDate())

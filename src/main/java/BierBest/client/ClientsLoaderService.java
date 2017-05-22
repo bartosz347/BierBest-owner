@@ -1,6 +1,6 @@
 package BierBest.client;
 
-import BierBest.Main;
+import BierBest.MainApp;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -9,7 +9,7 @@ public class ClientsLoaderService {
 
     public ClientModel loadData() {
         ClientModel client = null;
-        EntityManager entityManager = Main.sessionFactory.createEntityManager();
+        EntityManager entityManager = MainApp.sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
         List<ClientModel> result = entityManager.createQuery( "from client", ClientModel.class ).getResultList();
         for ( ClientModel cl : result ) {

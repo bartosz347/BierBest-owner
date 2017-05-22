@@ -9,7 +9,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.joda.money.Money;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,7 +17,7 @@ import java.util.Date;
 
 
 
-public class Main extends Application {
+public class MainApp extends Application {
 
 
 
@@ -72,7 +71,7 @@ public class Main extends Application {
             order.setStatusClientSide("new");
             order.setBeerInfo(new BeerInfo() {{
                 setName("pamperifko");
-                setPriceFromMoney(Money.parse("USD 20.10"));
+                setPriceString("USD 20.10");
                 setURL("https://untappd/najlepszePiwo");
                 setImgURL("https://scontent.fwaw3-1.fna.fbcdn.net/v/t1.0-9/14316725_1206873812697643_1428947998854593240_n.jpg?oh=8a110acf4e63b59177aaeffe46dacc4d&oe=59B6016B");
             }});
@@ -86,7 +85,7 @@ public class Main extends Application {
                 setName("some_beer");
                 setURL("https://untappd/some_beer");
                 setImgURL("http://www.anagram.pl/wp-content/uploads/krolweskie.jpg");
-                setPriceFromMoney(Money.parse("USD 12.30"));
+                setPriceString("USD 12.30");
             }});
             order.setDate(new Date());
 

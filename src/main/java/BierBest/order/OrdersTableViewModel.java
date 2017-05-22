@@ -1,7 +1,5 @@
-package BierBest;
+package BierBest.order;
 
-import BierBest.order.OrderViewModel;
-import BierBest.order.OrdersLoaderService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

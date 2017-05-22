@@ -10,10 +10,11 @@ import java.text.DateFormat;
 
 public class OrderViewModel {
 
+    public OrderModel getOrder() {
+        return order;
+    }
+
     private OrderModel order = new OrderModel();
-
-
-
     private ClientViewModel clientViewModel = new ClientViewModel();
 
     OrderViewModel() {
@@ -22,6 +23,10 @@ public class OrderViewModel {
 
     OrderViewModel(OrderModel order) {
         this.order = order;
+        loadDataFromOrderModel();
+    }
+
+    public void loadDataFromOrderModel() {
         clientViewModel = new ClientViewModel(order.getClient());
         setId(order.getId());
         setDate(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM).format(order.getDate()));
@@ -29,7 +34,7 @@ public class OrderViewModel {
         setStatusShopSide(order.getStatusShopSide());
 
         setBeerName(order.getBeerInfo().getName());
-        setBeerPrice(order.getBeerInfo().getPriceAsMoney().toString());
+        setBeerPrice(order.getBeerInfo().getPriceString());
         setBeerURL(order.getBeerInfo().getURL());
         setBeerImgURL(order.getBeerInfo().getImgURL());
     }
