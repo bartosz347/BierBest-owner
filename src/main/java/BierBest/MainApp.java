@@ -88,6 +88,7 @@ public class MainApp extends Application {
                 setPriceString("USD 12.30");
             }});
             order.setDate(new Date());
+            order.setStatusShopSide("rejected");
 
             order.setClient(client2);
             entityManager.persist(order);
@@ -125,7 +126,5 @@ public class MainApp extends Application {
         ((ClientDetailsScreenView)fxmlLoader.getController()).setClientViewModel(clientViewModel);
         ((ClientDetailsScreenView)fxmlLoader.getController()).setOwnStage(stage);
         stage.show();
-
-
     }
 }

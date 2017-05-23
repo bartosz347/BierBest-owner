@@ -10,7 +10,15 @@ public class OrdersTableViewModel {
 
 
     public OrdersTableViewModel() {
-        this.ordersData = ordersLoaderService.loadData();
+        loadWithRejected();
+    }
+
+    public void loadWithRejected() {
+        this.ordersData = ordersLoaderService.loadData(true);
+}
+
+    public void loadWithoutRejected() {
+        this.ordersData = ordersLoaderService.loadData(false);
     }
 
 

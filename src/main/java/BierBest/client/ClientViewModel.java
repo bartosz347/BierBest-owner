@@ -3,10 +3,13 @@ package BierBest.client;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import javax.persistence.EntityManager;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
+
+import static BierBest.MainApp.sessionFactory;
 
 public class ClientViewModel {
 
@@ -20,6 +23,7 @@ public class ClientViewModel {
     private StringProperty phoneNumber =  new SimpleStringProperty(this,"phoneNumber","");
 
     private StringProperty username = new SimpleStringProperty(this,"username","");
+    private StringProperty email = new SimpleStringProperty(this,"email","");
     private StringProperty address = new SimpleStringProperty(this,"address","");
 
     public ClientViewModel() {
@@ -40,6 +44,8 @@ public class ClientViewModel {
         setCity(client.getCity());
         setPhoneNumber(client.getPhoneNumber());
         setUsername(client.getUsername());
+        setEmail(client.getEmail());
+        setAddress(client.getAddress());
     }
 
     public void saveDataToClientModel() throws ParseException {
@@ -53,6 +59,16 @@ public class ClientViewModel {
         client.setCity(this.getCity());
         client.setPhoneNumber(this.getPhoneNumber());
         client.setUsername(this.getUsername());
+        client.setEmail(this.getEmail());
+        client.setAddress(this.getAddress());
+
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+
+        entityManager.merge(client);
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
 
@@ -126,5 +142,17 @@ public class ClientViewModel {
 
     public void setAddress(String address) {
         this.address.set(address);
+    }
+
+    public String getEmail() {
+        return email.get();
+    }
+
+    public StringProperty emailProperty() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email.set(email);
     }
 }

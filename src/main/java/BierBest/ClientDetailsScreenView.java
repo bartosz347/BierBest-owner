@@ -35,6 +35,9 @@ public class ClientDetailsScreenView implements Initializable {
     @FXML
     private TextField clientAddress;
 
+    @FXML
+    private TextField clientEmail;
+
 
     @FXML
     void saveClientDetails(ActionEvent event) {
@@ -65,7 +68,8 @@ public class ClientDetailsScreenView implements Initializable {
         clientPhonenumber.textProperty().bindBidirectional(clientViewModel.phoneNumberProperty());
         clientCity.textProperty().bindBidirectional(clientViewModel.cityProperty());
         clientAddress.textProperty().bindBidirectional(clientViewModel.addressProperty());
-        clientRegistrationDate.textProperty().bindBidirectional(clientViewModel.addressProperty());
+        clientRegistrationDate.textProperty().bindBidirectional(clientViewModel.registrationDateProperty());
+        clientEmail.textProperty().bindBidirectional(clientViewModel.emailProperty());
     }
 
     public void setClientViewModel(ClientViewModel clientViewModel) {

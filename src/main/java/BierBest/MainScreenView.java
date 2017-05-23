@@ -43,7 +43,7 @@ public class MainScreenView implements Initializable {
     @FXML
     private Label clientNameLabel;
     @FXML
-    private Label clientCityLabel;
+    private Label clientEmailLabel;
     @FXML
     private Label clientRegistrationDateLabel;
     @FXML
@@ -61,6 +61,9 @@ public class MainScreenView implements Initializable {
     private TextField beerPriceField;
     @FXML
     private ChoiceBox<String> beerStatusBox;
+
+    @FXML
+    private CheckMenuItem showRejectedCheck;
 
     private Image img;
 
@@ -92,7 +95,7 @@ public class MainScreenView implements Initializable {
     private void refresh() {
         // Binding to change dynamically while editing client details from dialog
         clientNameLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().nameProperty());
-        clientCityLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().cityProperty());
+        clientEmailLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().emailProperty());
         clientRegistrationDateLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().registrationDateProperty());
         clientPhoneNumberLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel().phoneNumberProperty());
 
@@ -118,6 +121,22 @@ public class MainScreenView implements Initializable {
     private void handleShowClientDetails() {
         mainApp.showClientDetails(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel());
 
+    }
+
+    @FXML
+    private void handleUpdateShowRejected(ActionEvent event) {
+        if(showRejectedCheck.isSelected())
+            ordersTableViewModel.loadWithRejected();
+        else
+            ordersTableViewModel.loadWithoutRejected();
+
+        // TODO fix - run on separate thread
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ordersTable.setItems(ordersTableViewModel.getOrdersData());
     }
 
 

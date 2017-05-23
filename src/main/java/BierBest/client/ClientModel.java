@@ -50,6 +50,10 @@ public class ClientModel {
     protected String phoneNumber;
 
     @NotNull
+    @Column(name = "email")
+    protected String email;
+
+    @NotNull
     @Column(name = "registration_date")
     @Temporal(TemporalType.TIMESTAMP)
     protected Date registrationDate;
@@ -101,6 +105,14 @@ public class ClientModel {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Date getRegistrationDate() {
