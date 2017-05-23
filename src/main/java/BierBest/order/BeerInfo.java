@@ -33,6 +33,9 @@ public class BeerInfo {
     }
 
     public void setPriceString(String priceString) {
+        if(!priceString.matches("^\\d{1,}[,|.]\\d\\d?$"))
+            throw new RuntimeException("invalid price format");
+        priceString = priceString.replace(',','.');
         this.priceString = priceString;
     }
 

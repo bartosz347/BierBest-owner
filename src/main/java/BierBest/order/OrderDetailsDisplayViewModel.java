@@ -12,11 +12,12 @@ public class OrderDetailsDisplayViewModel {
         return orderViewModel;
     }
 
-    public void updateOrder(String newStatus) {
+    public void updateOrder(String newStatus, String newPrice) {
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
 
         orderViewModel.getOrder().setStatusShopSide(newStatus);
+        orderViewModel.getOrder().getBeerInfo().setPriceString(newPrice);
         entityManager.merge(orderViewModel.getOrder());
 
         entityManager.getTransaction().commit();

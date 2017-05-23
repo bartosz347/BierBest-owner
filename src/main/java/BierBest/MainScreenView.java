@@ -115,7 +115,7 @@ public class MainScreenView implements Initializable {
 
     @FXML
     private void handleUpdateOrder(ActionEvent event) {
-        orderDetailsDisplayViewModel.updateOrder(beerStatusBox.getValue());
+        orderDetailsDisplayViewModel.updateOrder(beerStatusBox.getValue(), beerPriceField.getText());
         refresh();
     }
 
