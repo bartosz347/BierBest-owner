@@ -84,8 +84,10 @@ public class MainScreenView implements Initializable {
 
         ordersTable.setItems(ordersTableViewModel.getOrdersData());
         ordersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                    orderDetailsDisplayViewModel.load(newValue);
-                    refresh();
+                    if(newValue != null) {
+                        orderDetailsDisplayViewModel.load(newValue);
+                        refresh();
+                    }
                 }
         );
 
@@ -125,17 +127,12 @@ public class MainScreenView implements Initializable {
 
     @FXML
     private void handleUpdateShowRejected(ActionEvent event) {
+        ordersTable.getSelectionModel().clearSelection();
         if(showRejectedCheck.isSelected())
             ordersTableViewModel.loadWithRejected();
         else
             ordersTableViewModel.loadWithoutRejected();
 
-        // TODO fix - run on separate thread
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         ordersTable.setItems(ordersTableViewModel.getOrdersData());
     }
 
