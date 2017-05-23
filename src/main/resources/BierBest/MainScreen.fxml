@@ -126,7 +126,7 @@
                                           <Insets bottom="10.0" left="5.0" right="20.0" top="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="clientRegistrationDateLabel" layoutX="232.0" layoutY="23.0" text="133 Lynchburg Highway" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                    <Label fx:id="clientRegistrationDateLabel" layoutX="232.0" layoutY="23.0" text="2017-01-01" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
@@ -136,7 +136,7 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="clientPhoneNumberLabel" layoutX="185.0" layoutY="60.0" text="VA 24501" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                    <Label fx:id="clientPhoneNumberLabel" layoutX="185.0" layoutY="60.0" text="+48223336789" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
@@ -170,7 +170,7 @@
                                           <Insets right="10.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button alignment="CENTER" defaultButton="true" layoutX="222.0" layoutY="10.0" mnemonicParsing="false" text="show details">
+                                    <Button alignment="CENTER" defaultButton="true" layoutX="222.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleShowClientDetails" text="show details">
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin>
@@ -240,15 +240,11 @@
                                        </GridPane.margin>
                                     </ImageView>
                                     <Hyperlink fx:id="beerURLHyperlink" text="https://untappd/najlepszePiwo" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Button mnemonicParsing="false" text="&gt;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                    <Button mnemonicParsing="false" text="&lt;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                    <Label styleClass="labels" text="2 of 3 " GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                     <ChoiceBox fx:id="beerStatusBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" percentWidth="36.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="230.0" minWidth="10.0" percentWidth="64.0" prefWidth="167.0" />
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" percentWidth="30.0" prefWidth="50.0" />
                                  </columnConstraints>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -284,7 +280,7 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="ordersTable" onMouseClicked="#handleShowClientDetails" VBox.vgrow="ALWAYS">
                     <columns>
                       <TableColumn fx:id="orderIdColumn" prefWidth="193.0" text="order id" />
                       <TableColumn fx:id="clientNameColumn" prefWidth="287.0" text="client name" />

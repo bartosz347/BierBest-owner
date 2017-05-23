@@ -4,6 +4,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.StringTokenizer;
 
 public class ClientViewModel {
 
@@ -17,6 +20,7 @@ public class ClientViewModel {
     private StringProperty phoneNumber =  new SimpleStringProperty(this,"phoneNumber","");
 
     private StringProperty username = new SimpleStringProperty(this,"username","");
+    private StringProperty address = new SimpleStringProperty(this,"address","");
 
     public ClientViewModel() {
 
@@ -35,7 +39,20 @@ public class ClientViewModel {
         );
         setCity(client.getCity());
         setPhoneNumber(client.getPhoneNumber());
-        setUsername(client.username);
+        setUsername(client.getUsername());
+    }
+
+    public void saveDataToClientModel() throws ParseException {
+        StringTokenizer st = new StringTokenizer(this.getName());
+        if(st.countTokens() > 2)
+            throw new ParseException("invalid name",0);
+        client.setFirstName(st.nextToken());
+        client.setLastName(st.nextToken());
+        DateFormat regDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        client.setRegistrationDate(regDateFormat.parse(this.getRegistrationDate()));
+        client.setCity(this.getCity());
+        client.setPhoneNumber(this.getPhoneNumber());
+        client.setUsername(this.getUsername());
     }
 
 
@@ -97,5 +114,17 @@ public class ClientViewModel {
 
     public void setUsername(String username) {
         this.username.set(username);
+    }
+
+    public String getAddress() {
+        return address.get();
+    }
+
+    public StringProperty addressProperty() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address.set(address);
     }
 }

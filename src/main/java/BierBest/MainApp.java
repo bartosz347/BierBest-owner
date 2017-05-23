@@ -1,6 +1,7 @@
 package BierBest;
 
 import BierBest.client.ClientModel;
+import BierBest.client.ClientViewModel;
 import BierBest.order.BeerInfo;
 import BierBest.order.OrderModel;
 import javafx.application.Application;
@@ -13,6 +14,7 @@ import javafx.stage.Stage;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.IOException;
 import java.util.Date;
 
 
@@ -26,13 +28,11 @@ public class MainApp extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
         Parent root = fxmlLoader.load();
 
-        MainScreenView m = fxmlLoader.getController(); // todo obsolete
-
+        ((MainScreenView)fxmlLoader.getController()).mainApp = this;
 
         primaryStage.getIcons().add(new Image("BierBest/images/icon.png"));
         primaryStage.setTitle("BierBEST backoffice");
         primaryStage.setScene(new Scene(root, 750, 600));
-
 
         primaryStage.show();
     }
@@ -107,5 +107,25 @@ public class MainApp extends Application {
     @Override
     public void stop() throws Exception {
         sessionFactory.close();
+    }
+
+    public void showClientDetails(ClientViewModel clientViewModel) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ClientDetailsScreen.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("client details");
+        stage.getIcons().add(new Image("BierBest/images/icon.png"));
+        ((ClientDetailsScreenView)fxmlLoader.getController()).setClientViewModel(clientViewModel);
+        ((ClientDetailsScreenView)fxmlLoader.getController()).setOwnStage(stage);
+        stage.show();
+
+
     }
 }
