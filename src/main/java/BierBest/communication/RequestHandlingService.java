@@ -9,6 +9,16 @@ import BierBest.communication.payloads.Response;
 import javax.persistence.EntityManager;
 
 public class RequestHandlingService {
+    private static RequestHandlingService ourInstance = new RequestHandlingService();
+
+    public static RequestHandlingService getInstance() {
+        return ourInstance;
+    }
+
+    private RequestHandlingService() {
+    }
+
+
     public Message handleMessage(Message incomingMessage) {
         Message responseMessage = null;
         switch (incomingMessage.payloadType) {
