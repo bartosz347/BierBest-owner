@@ -1,35 +1,31 @@
 package BierBest.communication;
 
-import BierBest.MainApp;
 import BierBest.client.ClientModel;
 import BierBest.communication.payloads.CommunicationCheck;
-import BierBest.communication.payloads.Payload;
-import BierBest.communication.payloads.Response;
+import BierBest.communication.payloads.PayloadType;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class RequestHandlingService {
-    private static RequestHandlingService ourInstance = new RequestHandlingService();
 
-    public static RequestHandlingService getInstance() {
-        return ourInstance;
+    public RequestHandlingService(EntityManagerFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
-    private RequestHandlingService() {
-    }
+    private EntityManagerFactory sessionFactory;
 
-
-    public Message handleMessage(Message incomingMessage) {
-        Message responseMessage = null;
-        switch (incomingMessage.payloadType) {
+    public Response handleRequest(Request incomingRequest) {
+        Response responseMessage = null;
+        switch (incomingRequest.payloadType) {
             case COMMUNICATION_CHECK:
-                System.out.println(((CommunicationCheck) incomingMessage.payload).testData);
+                System.out.println(((CommunicationCheck) incomingRequest.payload).testData);
                 break;
             case CHECK_USERNAME:
-                if(checkProposedUsername(incomingMessage.getUsername()))
-                    responseMessage = new Message(Payload.PayloadType.RESPONSE, new Response(1));
+                if(checkProposedUsername(incomingRequest.getUsername()))
+                    responseMessage = new Response(PayloadType.RESPONSE_CODE, Response.SUCCESS);
                 else
-                    responseMessage = new Message(Payload.PayloadType.RESPONSE, new Response(0));
+                    responseMessage = new Response(PayloadType.RESPONSE_CODE, Response.INVALID);
                 break;
             default:
                 throw new RuntimeException("unsupported payload type");
@@ -40,7 +36,7 @@ public class RequestHandlingService {
 
 
     private boolean checkProposedUsername(String username) {
-        EntityManager entityManager = MainApp.sessionFactory.createEntityManager();
+        EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
         int resNo = entityManager
                 .createQuery("from client where username = :username", ClientModel.class)

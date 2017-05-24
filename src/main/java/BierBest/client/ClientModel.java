@@ -10,6 +10,10 @@ import java.util.Date;
 @Entity (name = "client")
 public class ClientModel {
 
+    public ClientModel() {
+
+    }
+
     @Id
     @GeneratedValue
     protected Long id;

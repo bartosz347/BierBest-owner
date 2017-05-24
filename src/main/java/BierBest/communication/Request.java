@@ -1,25 +1,25 @@
 package BierBest.communication;
 
 import BierBest.communication.payloads.Payload;
+import BierBest.communication.payloads.PayloadType;
 
 import java.io.Serializable;
 
-public class Message implements Serializable {
-
-    public Payload.PayloadType payloadType;
+public class Request implements Serializable {
+    public PayloadType payloadType;
     public Payload payload;
 
     private String username = "";
     private String password = "";
 
-    public Message(String username, String password, Payload.PayloadType payloadType, Payload payload) {
+    public Request(String username, String password, PayloadType payloadType, Payload payload) {
         this.username = username;
         this.password = password;
         this.payloadType = payloadType;
         this.payload = payload;
     }
 
-    public Message(Payload.PayloadType payloadType, Payload payload) {
+    public Request(PayloadType payloadType, Payload payload) {
         this.payloadType = payloadType;
         this.payload = payload;
     }
@@ -32,4 +32,3 @@ public class Message implements Serializable {
         return password;
     }
 }
-

@@ -1,5 +1,6 @@
 package BierBest.communication;
 
+import BierBest.MainApp;
 import javassist.bytecode.stackmap.TypeData;
 
 import javax.net.ssl.SSLServerSocketFactory;
@@ -29,6 +30,7 @@ public class BierBestServer extends Thread {
     }
 
     private void startServer() {
+        RequestHandlingService requestHandlingService = new RequestHandlingService(MainApp.sessionFactory);
         LOGGER.log( Level.INFO, "starting server" );
 
         try (
@@ -37,7 +39,7 @@ public class BierBestServer extends Thread {
         ) {
             Socket clientSocket;
             while ((clientSocket = serverSocket.accept()) != null) {
-                BierBestServerThreadForClient srv = new BierBestServerThreadForClient("scktForClient", clientSocket);
+                BierBestServerThreadForClient srv = new BierBestServerThreadForClient("scktForClient", clientSocket, requestHandlingService);
                 srv.start();
             }
         } catch (Exception e) {

@@ -1,8 +1,7 @@
 package BierBest.communication;
 
 import BierBest.communication.payloads.CommunicationCheck;
-import BierBest.communication.payloads.Payload;
-import BierBest.communication.payloads.Response;
+import BierBest.communication.payloads.PayloadType;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -54,21 +53,23 @@ public class BierBestClient {
         ) {
             System.out.println("connected to " + client.getRemoteSocketAddress());
 
-            List<Message> messages = new ArrayList<>();
+            List<Request> requests = new ArrayList<>();
 
-            messages.add(new Message("","", Payload.PayloadType.COMMUNICATION_CHECK,new CommunicationCheck("test")));
-            messages.add(new Message("test_user","", Payload.PayloadType.CHECK_USERNAME, null));
-            messages.add(new Message("a_stephens","", Payload.PayloadType.CHECK_USERNAME, null));
+            requests.add(new Request("","", PayloadType.COMMUNICATION_CHECK,new CommunicationCheck("test")));
+            requests.add(new Request("test_user","", PayloadType.CHECK_USERNAME, null));
+            requests.add(new Request("a_stephens","", PayloadType.CHECK_USERNAME, null));
 
-            for (Message m : messages) {
-                outToServer.writeObject(m);
+            for (Request r : requests) {
+                outToServer.writeObject(r);
             }
 
-            Message incomingMessage;
-            while ((incomingMessage = (Message) inFromServer.readObject()) != null) {
-                if(incomingMessage.payloadType == Payload.PayloadType.RESPONSE)
+/*          TODO FIX
+            Response incomingResponse;
+            while ((incomingResponse = (Response) inFromServer.readObject()) != null) {
+                if(incomingResponse.payloadType == PayloadType.RESPONSE)
                     System.out.println(((Response)incomingMessage.payload).getCode());
             }
+      */
 
 
             client.close();

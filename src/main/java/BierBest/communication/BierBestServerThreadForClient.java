@@ -11,10 +11,11 @@ import java.util.logging.Logger;
 
 public class BierBestServerThreadForClient extends Thread {
 
+    private RequestHandlingService requestHandlingService;
     private static final Logger LOGGER = Logger.getLogger( TypeData.ClassName.class.getName() );
     private Socket clientSocket;
 
-    public BierBestServerThreadForClient(String name, Socket clientSocket) {
+    public BierBestServerThreadForClient(String name, Socket clientSocket, RequestHandlingService requestHandlingService) {
         super(name);
         this.clientSocket = clientSocket;
     }
@@ -27,12 +28,12 @@ public class BierBestServerThreadForClient extends Thread {
                 ObjectOutputStream outToClient = new ObjectOutputStream(clientSocket.getOutputStream());
                 ObjectInputStream inFromClient = new ObjectInputStream(clientSocket.getInputStream());
         ) {
-            Message incomingMessage;
-            Message messageToSend;
-            while ((incomingMessage = (Message) inFromClient.readObject()) != null) {
-                messageToSend = RequestHandlingService.getInstance().handleMessage(incomingMessage);
-                if (messageToSend != null)
-                    outToClient.writeObject(messageToSend);
+            Request incomingRequest;
+            Response responseToSend;
+            while ((incomingRequest = (Request) inFromClient.readObject()) != null) {
+                responseToSend = requestHandlingService.handleRequest(incomingRequest);
+                if (responseToSend != null)
+                    outToClient.writeObject(responseToSend);
             }
 
         } catch (EOFException eof) {
