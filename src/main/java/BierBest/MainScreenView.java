@@ -75,6 +75,7 @@ public class MainScreenView implements Initializable {
         ordersTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) handleShowClientDetails();
         });
+        beerURLHyperlink.setOnMouseClicked(event -> mainApp.getHostServices().showDocument(beerURLHyperlink.getText())  );
 
         orderIdColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         clientNameColumn.setCellValueFactory(cellData -> cellData.getValue().getClientViewModel().nameProperty());

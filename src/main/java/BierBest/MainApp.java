@@ -2,6 +2,7 @@ package BierBest;
 
 import BierBest.client.ClientModel;
 import BierBest.client.ClientViewModel;
+import BierBest.communication.BierBestServer;
 import BierBest.order.BeerInfo;
 import BierBest.order.OrderModel;
 import javafx.application.Application;
@@ -101,6 +102,9 @@ public class MainApp extends Application {
             System.out.println(e);
             return;
         }
+
+        BierBestServer server = new BierBestServer();
+        server.start();
 
         launch(args);
     }
