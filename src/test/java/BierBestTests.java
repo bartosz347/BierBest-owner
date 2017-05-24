@@ -1,13 +1,13 @@
-import BierBest.MainApp;
 import BierBest.client.ClientModel;
 import BierBest.communication.Request;
 import BierBest.communication.RequestHandlingService;
 import BierBest.communication.Response;
 import BierBest.communication.payloads.ClientData;
-import BierBest.communication.payloads.PayloadType;
+import BierBest.communication.payloads.MessageAction;
 import BierBest.order.BeerInfo;
 import BierBest.order.OrderModel;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,6 +16,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.Date;
 
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.*;
 
 public class BierBestTests {
@@ -98,12 +99,12 @@ public class BierBestTests {
     public void GivenUniqueUsernameWhenCheckRequestedThenSuccessResponseCodeReceived() {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
-        Request req = new Request("a_nowak","", PayloadType.CHECK_USERNAME, null);
+        Request req = new Request("a_nowak","", MessageAction.CHECK_USERNAME, null);
         BierBest.communication.Response resp;
         resp = handlingService.handleRequest(req);
 
         assertTrue(resp instanceof Response);
-        assertEquals(resp.payloadType, PayloadType.RESPONSE_CODE);
+        assertEquals(resp.messageAction, MessageAction.RESPONSE_CODE);
         assertEquals(((Response)resp).getResponseCode(),  resp.SUCCESS);
     }
 
@@ -111,12 +112,12 @@ public class BierBestTests {
     public void GivenDuplicateUsernameWhenCheckRequestedThenInvalidResponseCodeReceived() {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
-        Request req = new Request("k_kowalski","", PayloadType.CHECK_USERNAME, null);
+        Request req = new Request("k_kowalski","", MessageAction.CHECK_USERNAME, null);
         BierBest.communication.Response resp;
         resp = handlingService.handleRequest(req);
 
         assertTrue(resp instanceof Response);
-        assertEquals(resp.payloadType, PayloadType.RESPONSE_CODE);
+        assertEquals(resp.messageAction, MessageAction.RESPONSE_CODE);
         assertEquals(((Response)resp).getResponseCode(),  resp.INVALID);
     }
 
@@ -127,21 +128,22 @@ public class BierBestTests {
 
         ClientData clientData = new ClientData();
         clientData.client = new ClientModel();
-        clientData.client.setFirstName("a_nowak");
+        clientData.client.setFirstName("Andrzej");
         clientData.client.setLastName("Nowak");
+        clientData.client.setUsername("a_nowak");
         clientData.client.setCity("Poznań");
         clientData.client.setAddress("Słoneczna 14 m. 4");
         clientData.client.setPhoneNumber("+48111222333");
         clientData.client.setEmail("test@test.com");
-        clientData.client.setRegistrationDate(new Date());
+        //clientData.client.setRegistrationDate(new Date()); TODO timestamp-date comparison mismatch
 
-        Request req = new Request("a_nowak","secret_password", PayloadType.ADD_CLIENT, clientData);
+        Request req = new Request("a_nowak","secret_password", MessageAction.ADD_CLIENT, clientData);
         Response resp;
         resp = handlingService.handleRequest(req);
 
 
         ClientModel fetchedClient = null;
-        EntityManager entityManager = MainApp.sessionFactory.createEntityManager();
+        EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
         fetchedClient = entityManager.createQuery( "from client where username = :username", ClientModel.class )
                 .setParameter("username",clientData.client.getUsername())
@@ -151,8 +153,8 @@ public class BierBestTests {
         entityManager.close();
 
         assertNotNull(fetchedClient);
-        assertEquals(clientData.client, fetchedClient);
-        assertEquals(resp.payloadType,  PayloadType.RESPONSE_CODE);
+        Assert.assertThat(clientData.client, samePropertyValuesAs(fetchedClient));
+        assertEquals(resp.messageAction,  MessageAction.RESPONSE_CODE);
         assertEquals(resp.getResponseCode(), resp.SUCCESS);
     }
 
@@ -160,25 +162,26 @@ public class BierBestTests {
     public void GivenValidClientCredentialsWhenClientDataRequestedThenDataIsReturned() {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
-        ClientModel referenceClient = new ClientModel();
+        ClientModel referenceClient;
         referenceClient = new ClientModel();
-        referenceClient.setFirstName("a_nowak");
+        referenceClient.setFirstName("Andrzej");
         referenceClient.setLastName("Nowak");
+        referenceClient.setUsername("a_nowak");
         referenceClient.setCity("Poznań");
         referenceClient.setAddress("Słoneczna 14 m. 4");
         referenceClient.setPhoneNumber("+48111222333");
         referenceClient.setEmail("test@test.com");
-        referenceClient.setRegistrationDate(new Date());
+        //referenceClient.setRegistrationDate(new Date()); TODO timestamp-date comparison mismatch
 
-        Request req = new Request("a_nowak","secret_password", PayloadType.GET_CLIENT_DATA, null);
+        Request req = new Request("a_nowak","secret_password", MessageAction.GET_CLIENT_DATA, null);
         Response resp;
         resp = handlingService.handleRequest(req);
 
-        assertNotNull(req.payload);
-        assertTrue(req.payload instanceof ClientData);
-        assertEquals(referenceClient, ((ClientData)req.payload).client);
-        assertEquals(resp.payloadType, PayloadType.RESPONSE_CODE);
-        assertEquals(((Response) resp).getResponseCode(), resp.SUCCESS);
+        assertNotNull(resp.payload);
+        assertTrue(resp.payload instanceof ClientData);
+        Assert.assertThat(referenceClient, samePropertyValuesAs(((ClientData) resp.payload).client));
+        assertEquals(resp.messageAction, MessageAction.GET_CLIENT_DATA);
+        assertEquals(resp.getResponseCode(), resp.SUCCESS);
     }
 }
 

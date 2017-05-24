@@ -1,7 +1,7 @@
 package BierBest.communication;
 
 import BierBest.communication.payloads.CommunicationCheck;
-import BierBest.communication.payloads.PayloadType;
+import BierBest.communication.payloads.MessageAction;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -55,9 +55,9 @@ public class BierBestClient {
 
             List<Request> requests = new ArrayList<>();
 
-            requests.add(new Request("","", PayloadType.COMMUNICATION_CHECK,new CommunicationCheck("test")));
-            requests.add(new Request("test_user","", PayloadType.CHECK_USERNAME, null));
-            requests.add(new Request("a_stephens","", PayloadType.CHECK_USERNAME, null));
+            requests.add(new Request("","", MessageAction.COMMUNICATION_CHECK,new CommunicationCheck("test")));
+            requests.add(new Request("test_user","", MessageAction.CHECK_USERNAME, null));
+            requests.add(new Request("a_stephens","", MessageAction.CHECK_USERNAME, null));
 
             for (Request r : requests) {
                 outToServer.writeObject(r);
@@ -66,7 +66,7 @@ public class BierBestClient {
 /*          TODO FIX
             Response incomingResponse;
             while ((incomingResponse = (Response) inFromServer.readObject()) != null) {
-                if(incomingResponse.payloadType == PayloadType.RESPONSE)
+                if(incomingResponse.messageAction == MessageAction.RESPONSE)
                     System.out.println(((Response)incomingMessage.payload).getCode());
             }
       */

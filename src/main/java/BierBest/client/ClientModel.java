@@ -1,6 +1,7 @@
 package BierBest.client;
 
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -58,9 +59,13 @@ public class ClientModel {
     protected String email;
 
     @NotNull
-    @Column(name = "registration_date")
+    @Column(name = "registration_date", columnDefinition="DATETIME")
     @Temporal(TemporalType.TIMESTAMP)
     protected Date registrationDate;
+
+    @Column(name = "hash", updatable = false)
+    @Type( type = "BierBest.client.HashStringUserType" )
+    protected String hash = "";
 
 
     public String getUsername() {
@@ -125,5 +130,13 @@ public class ClientModel {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 }

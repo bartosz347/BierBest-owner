@@ -1,6 +1,6 @@
 package BierBest.communication.payloads;
 
-public enum PayloadType {
+public enum MessageAction {
     CHECK_USERNAME,
     ADD_CLIENT,
     GET_CLIENT_DATA,

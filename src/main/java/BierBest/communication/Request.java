@@ -1,26 +1,26 @@
 package BierBest.communication;
 
+import BierBest.communication.payloads.MessageAction;
 import BierBest.communication.payloads.Payload;
-import BierBest.communication.payloads.PayloadType;
 
 import java.io.Serializable;
 
 public class Request implements Serializable {
-    public PayloadType payloadType;
+    public MessageAction messageAction;
     public Payload payload;
 
     private String username = "";
     private String password = "";
 
-    public Request(String username, String password, PayloadType payloadType, Payload payload) {
+    public Request(String username, String password, MessageAction messageAction, Payload payload) {
         this.username = username;
         this.password = password;
-        this.payloadType = payloadType;
+        this.messageAction = messageAction;
         this.payload = payload;
     }
 
-    public Request(PayloadType payloadType, Payload payload) {
-        this.payloadType = payloadType;
+    public Request(MessageAction messageAction, Payload payload) {
+        this.messageAction = messageAction;
         this.payload = payload;
     }
 
