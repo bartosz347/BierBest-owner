@@ -3,6 +3,7 @@ package BierBest;
 import BierBest.order.OrderDetailsDisplayViewModel;
 import BierBest.order.OrderViewModel;
 import BierBest.order.OrdersTableViewModel;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -104,10 +105,13 @@ public class MainScreenView implements Initializable {
 
         clientSideStatusLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().statusClientSideProperty());
 
-        // TODO FIXME concurrency
-        if(!orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL().isEmpty()) {
-            img = new Image(orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL());
-            beerImageView.imageProperty().setValue(img);
+         if(!orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL().isEmpty()) {
+            new Thread(() -> {
+                img = new Image("BierBest/images/placeholder.png");
+                img = new Image(orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL());
+                Platform.runLater(() -> beerImageView.imageProperty().setValue(img));
+            }).start();
+
         }
         beerNameLabel.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerName());
         beerURLHyperlink.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerURL());

@@ -107,7 +107,8 @@ public class MainApp extends Application {
                 setName("pamperifko");
                 setPriceString("20.10");
                 setURL("https://untappd/najlepszePiwo");
-                setImgURL("https://scontent.fwaw3-1.fna.fbcdn.net/v/t1.0-9/14316725_1206873812697643_1428947998854593240_n.jpg?oh=8a110acf4e63b59177aaeffe46dacc4d&oe=59B6016B");
+                setImgURL("https://i.imgur.com/9qtVISH.jpg");
+               // setImgURL("https://scontent.fwaw3-1.fna.fbcdn.net/v/t1.0-9/14316725_1206873812697643_1428947998854593240_n.jpg?oh=8a110acf4e63b59177aaeffe46dacc4d&oe=59B6016B");
             }});
             order.setDate(new Date());
             order.setClient(client1);
