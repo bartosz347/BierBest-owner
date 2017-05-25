@@ -19,8 +19,8 @@ public class MainScreenView implements Initializable {
 
     protected MainApp mainApp;
 
-    private OrdersTableViewModel ordersTableViewModel = new OrdersTableViewModel(mainApp.dataOperationsService);
-    private OrderDetailsDisplayViewModel orderDetailsDisplayViewModel = new OrderDetailsDisplayViewModel(mainApp.dataOperationsService);
+    private OrdersTableViewModel ordersTableViewModel = new OrdersTableViewModel(this);
+    private OrderDetailsDisplayViewModel orderDetailsDisplayViewModel = new OrderDetailsDisplayViewModel();
 
     ObservableList<String> shopSideStatuses = FXCollections.<String>observableArrayList(
             "", "rejected", "price offered", "sent");
@@ -83,7 +83,7 @@ public class MainScreenView implements Initializable {
         orderStatusClientColumn.setCellValueFactory(cellData -> cellData.getValue().statusClientSideProperty());
         orderStatusShopColumn.setCellValueFactory(cellData -> cellData.getValue().statusShopSideProperty());
 
-        ordersTable.setItems(ordersTableViewModel.getOrdersData());
+        ordersTableViewModel.load(true);
         ordersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                     if(newValue != null) {
                         orderDetailsDisplayViewModel.load(newValue);
@@ -104,6 +104,7 @@ public class MainScreenView implements Initializable {
 
         clientSideStatusLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().statusClientSideProperty());
 
+        // TODO FIXME concurrency
         if(!orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL().isEmpty()) {
             img = new Image(orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL());
             beerImageView.imageProperty().setValue(img);
@@ -129,12 +130,13 @@ public class MainScreenView implements Initializable {
     @FXML
     private void handleUpdateShowRejected(ActionEvent event) {
         ordersTable.getSelectionModel().clearSelection();
-        if(showRejectedCheck.isSelected())
-            ordersTableViewModel.loadWithRejected();
-        else
-            ordersTableViewModel.loadWithoutRejected();
+        ordersTableViewModel.load(showRejectedCheck.isSelected());
 
-        ordersTable.setItems(ordersTableViewModel.getOrdersData());
+        //ordersTable.setItems(ordersTableViewModel.getOrdersData());
+    }
+
+    public void dd(ObservableList<OrderViewModel> list) {
+        ordersTable.setItems(list);
     }
 
 

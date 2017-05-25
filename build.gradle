@@ -15,8 +15,6 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.10.Final'
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
-
-    // todo verify if hamcrest-all is needed
     // https://mvnrepository.com/artifact/org.hamcrest/hamcrest-all
     compile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
 

@@ -1,20 +1,24 @@
 package BierBest.client;
 
-import BierBest.DataOperationsService;
+import BierBest.UpdateModelsTask;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javassist.bytecode.stackmap.TypeData;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import static BierBest.MainApp.sessionFactory;
 
 
 public class ClientViewModel {
+    private static final Logger LOGGER = Logger.getLogger( TypeData.ClassName.class.getName() );
 
     private ClientModel client;
-    private DataOperationsService dataOperationsService;
 
     private StringProperty name = new SimpleStringProperty(this,"name","");
     private StringProperty registrationDate = new SimpleStringProperty(this,"registrationDate","");
@@ -25,14 +29,13 @@ public class ClientViewModel {
     private StringProperty email = new SimpleStringProperty(this,"email","");
     private StringProperty address = new SimpleStringProperty(this,"address","");
 
-    public ClientViewModel(DataOperationsService dataOperationsService) {
-        this.dataOperationsService = dataOperationsService;
+    public ClientViewModel() {
+
     }
 
 
-    public ClientViewModel(ClientModel client, DataOperationsService dataOperationsService) {
+    public ClientViewModel(ClientModel client) {
         this.client = client;
-        this.dataOperationsService = dataOperationsService;
         loadDataFromClientModel();
     }
 
@@ -62,7 +65,11 @@ public class ClientViewModel {
         client.setEmail(this.getEmail());
         client.setAddress(this.getAddress());
 
-        dataOperationsService.updateClient(client);
+        final UpdateModelsTask updateModelsTask = new UpdateModelsTask(sessionFactory, client);
+        updateModelsTask.setOnSucceeded(ev -> LOGGER.log(Level.INFO,"client updated successfully"));
+        Thread backgroundThread = new Thread(updateModelsTask);
+        backgroundThread.setDaemon(true);
+        backgroundThread.start();
     }
 
 

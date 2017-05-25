@@ -36,8 +36,7 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
-    private static EntityManagerFactory sessionFactory;
-    public static DataOperationsService dataOperationsService;
+    public static EntityManagerFactory sessionFactory;
     private static BierBestServer serverThread;
 
     public static void main(String[] args) {
@@ -45,7 +44,6 @@ public class MainApp extends Application {
         sessionFactory = Persistence.createEntityManagerFactory( "BierBest-owner" );
 
         loadSampleDataToDB();
-        dataOperationsService = new DataOperationsService(sessionFactory);
 
         serverThread = new BierBestServer(sessionFactory);
         serverThread.start();

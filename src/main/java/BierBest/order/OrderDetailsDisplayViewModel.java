@@ -1,15 +1,18 @@
 package BierBest.order;
 
-import BierBest.DataOperationsService;
+import BierBest.MainApp;
+import BierBest.UpdateModelsTask;
+import javassist.bytecode.stackmap.TypeData;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class OrderDetailsDisplayViewModel {
-
+    private static final Logger LOGGER = Logger.getLogger( TypeData.ClassName.class.getName() );
     OrderViewModel orderViewModel;
-    private DataOperationsService dataOperationsService;
 
-    public OrderDetailsDisplayViewModel(DataOperationsService dataOperationsService) {
-        this.dataOperationsService = dataOperationsService;
-        this.orderViewModel = new OrderViewModel(dataOperationsService);
+    public OrderDetailsDisplayViewModel( ) {
+        this.orderViewModel = new OrderViewModel();
     }
 
     public OrderViewModel getOrderViewModel() {
@@ -20,7 +23,11 @@ public class OrderDetailsDisplayViewModel {
         orderViewModel.getOrder().setStatusShopSide(newStatus);
         orderViewModel.getOrder().getBeerInfo().setPriceString(newPrice);
 
-        dataOperationsService.updateOrder(orderViewModel.getOrder());
+        final UpdateModelsTask updateModelsTask = new UpdateModelsTask(MainApp.sessionFactory, orderViewModel.getOrder());
+        updateModelsTask.setOnSucceeded(ev -> LOGGER.log(Level.INFO,"order updated successfully"));
+        Thread backgroundThread = new Thread(updateModelsTask);
+        backgroundThread.setDaemon(true);
+        backgroundThread.start();
 
         orderViewModel.loadDataFromOrderModel();
     }

@@ -1,30 +1,24 @@
 package BierBest.order;
 
-import BierBest.DataOperationsService;
-import javafx.collections.FXCollections;
+import BierBest.GetOrdersTask;
+import BierBest.MainApp;
+import BierBest.MainScreenView;
 import javafx.collections.ObservableList;
 
 public class OrdersTableViewModel {
 
-    private ObservableList<OrderViewModel> ordersData = FXCollections.observableArrayList();
-    private DataOperationsService dataOperationsService;
+    private MainScreenView mainScreenView;
 
-
-    public OrdersTableViewModel(DataOperationsService dataOperationsService) {
-        this.dataOperationsService = dataOperationsService;
-        loadWithRejected();
+    public OrdersTableViewModel(MainScreenView mainScreenView) {
+        this.mainScreenView = mainScreenView;
     }
 
-    public void loadWithRejected() {
-        this.ordersData = dataOperationsService.getOrders(true);
-}
-
-    public void loadWithoutRejected() {
-        this.ordersData = dataOperationsService.getOrders(false);
+    public void load(boolean showRejected) {
+        final GetOrdersTask getOrdersTask = new GetOrdersTask(MainApp.sessionFactory, showRejected);
+        getOrdersTask.setOnSucceeded(ev -> mainScreenView.dd((ObservableList<OrderViewModel>)getOrdersTask.getValue()));
+        Thread backgroundThread = new Thread(getOrdersTask);
+        backgroundThread.setDaemon(true);
+        backgroundThread.start();
     }
 
-
-    public ObservableList<OrderViewModel> getOrdersData() {
-        return ordersData;
-    }
 }
