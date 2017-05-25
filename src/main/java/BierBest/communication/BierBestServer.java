@@ -4,6 +4,7 @@ import BierBest.MainApp;
 import javassist.bytecode.stackmap.TypeData;
 
 import javax.net.ssl.SSLServerSocketFactory;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -20,7 +21,8 @@ public class BierBestServer extends Thread {
         //-Djavax.net.ssl.keyStorePassword="..." -Djavax.net.ssl.keyStore="..."
 
     private static final Logger LOGGER = Logger.getLogger( TypeData.ClassName.class.getName() );
-    public static final int PORT = 4488;
+    private static final int PORT = 4488;
+    private ServerSocket serverSocket;
 
 
     @Override
@@ -29,21 +31,35 @@ public class BierBestServer extends Thread {
         this.startServer();
     }
 
+    public void close() {
+        try {
+            if(!serverSocket.isClosed())
+                serverSocket.close();
+        } catch (IOException e) {
+            LOGGER.log( Level.INFO, "cannot stop server" );
+        }
+    }
+
     private void startServer() {
         RequestHandlingService requestHandlingService = new RequestHandlingService(MainApp.sessionFactory);
         LOGGER.log( Level.INFO, "starting server" );
 
         try (
-                //ServerSocket serverSocket = new ServerSocket(PORT); // without SSL
+                //serverSocket = new ServerSocket(PORT); // without SSL
                 ServerSocket serverSocket = SSLServerSocketFactory.getDefault().createServerSocket(PORT);
         ) {
             Socket clientSocket;
+            this.serverSocket = serverSocket;
             while ((clientSocket = serverSocket.accept()) != null) {
                 BierBestServerThreadForClient srv = new BierBestServerThreadForClient("scktForClient", clientSocket, requestHandlingService);
                 srv.start();
             }
+
         } catch (Exception e) {
-            System.out.println(e);
+            if(e.getMessage().equals("socket closed"))
+                LOGGER.log( Level.INFO, "server stopped" );
+            else
+                LOGGER.log( Level.INFO, "server error" );
         }
     }
 }

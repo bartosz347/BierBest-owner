@@ -39,6 +39,8 @@ public class MainApp extends Application {
     }
 
     public static EntityManagerFactory sessionFactory;
+    private static BierBestServer serverThread;
+
     public static void main(String[] args) {
 
         // Create an EMF
@@ -103,8 +105,9 @@ public class MainApp extends Application {
             return;
         }
 
-        BierBestServer server = new BierBestServer();
-        server.start();
+        serverThread = new BierBestServer();
+        serverThread.start();
+
 
         launch(args);
     }
@@ -112,6 +115,7 @@ public class MainApp extends Application {
     @Override
     public void stop() throws Exception {
         sessionFactory.close();
+        serverThread.close();
     }
 
     public void showClientDetails(ClientViewModel clientViewModel) {
