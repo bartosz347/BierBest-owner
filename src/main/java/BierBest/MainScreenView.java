@@ -19,8 +19,8 @@ public class MainScreenView implements Initializable {
 
     protected MainApp mainApp;
 
-    private OrdersTableViewModel ordersTableViewModel = new OrdersTableViewModel();
-    private OrderDetailsDisplayViewModel orderDetailsDisplayViewModel = new OrderDetailsDisplayViewModel();
+    private OrdersTableViewModel ordersTableViewModel = new OrdersTableViewModel(mainApp.dataOperationsService);
+    private OrderDetailsDisplayViewModel orderDetailsDisplayViewModel = new OrderDetailsDisplayViewModel(mainApp.dataOperationsService);
 
     ObservableList<String> shopSideStatuses = FXCollections.<String>observableArrayList(
             "", "rejected", "price offered", "sent");

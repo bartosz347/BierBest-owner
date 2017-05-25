@@ -41,8 +41,6 @@ public class ClientDetailsScreenView implements Initializable {
 
     @FXML
     void saveClientDetails(ActionEvent event) {
-        // todo verify username
-        // todo save data in DB
         try {
             clientViewModel.saveDataToClientModel();
         } catch (ParseException e) {

@@ -1,21 +1,20 @@
 package BierBest.client;
 
+import BierBest.DataOperationsService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import javax.persistence.EntityManager;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 
-import static BierBest.MainApp.sessionFactory;
+
 
 public class ClientViewModel {
 
-    // private ClientsLoaderService clientsLoaderService = new ClientsLoaderService();
-
     private ClientModel client;
+    private DataOperationsService dataOperationsService;
 
     private StringProperty name = new SimpleStringProperty(this,"name","");
     private StringProperty registrationDate = new SimpleStringProperty(this,"registrationDate","");
@@ -26,13 +25,14 @@ public class ClientViewModel {
     private StringProperty email = new SimpleStringProperty(this,"email","");
     private StringProperty address = new SimpleStringProperty(this,"address","");
 
-    public ClientViewModel() {
-
+    public ClientViewModel(DataOperationsService dataOperationsService) {
+        this.dataOperationsService = dataOperationsService;
     }
 
 
-    public ClientViewModel(ClientModel client) {
+    public ClientViewModel(ClientModel client, DataOperationsService dataOperationsService) {
         this.client = client;
+        this.dataOperationsService = dataOperationsService;
         loadDataFromClientModel();
     }
 
@@ -51,24 +51,18 @@ public class ClientViewModel {
     public void saveDataToClientModel() throws ParseException {
         StringTokenizer st = new StringTokenizer(this.getName());
         if(st.countTokens() > 2)
-            throw new ParseException("invalid name",0);
+            throw new ParseException("invalid name", 0);
         client.setFirstName(st.nextToken());
         client.setLastName(st.nextToken());
         DateFormat regDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         client.setRegistrationDate(regDateFormat.parse(this.getRegistrationDate()));
         client.setCity(this.getCity());
         client.setPhoneNumber(this.getPhoneNumber());
-        client.setUsername(this.getUsername());
+        client.setUsername(this.getUsername()); // todo verify if unique
         client.setEmail(this.getEmail());
         client.setAddress(this.getAddress());
 
-        EntityManager entityManager = sessionFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-
-        entityManager.merge(client);
-
-        entityManager.getTransaction().commit();
-        entityManager.close();
+        dataOperationsService.updateClient(client);
     }
 
 

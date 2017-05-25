@@ -2,10 +2,8 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-
+<?import javafx.scene.text.*?>
 <GridPane alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BierBest.ClientDetailsScreenView">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="154.0" minWidth="121.0" prefWidth="151.0" />

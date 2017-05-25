@@ -1,9 +1,9 @@
 package BierBest.communication;
 
-import BierBest.MainApp;
 import javassist.bytecode.stackmap.TypeData;
 
 import javax.net.ssl.SSLServerSocketFactory;
+import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,7 +23,11 @@ public class BierBestServer extends Thread {
     private static final Logger LOGGER = Logger.getLogger( TypeData.ClassName.class.getName() );
     private static final int PORT = 4488;
     private ServerSocket serverSocket;
+    private EntityManagerFactory sessionFactory;
 
+    public BierBestServer(EntityManagerFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public void run() {
@@ -41,7 +45,7 @@ public class BierBestServer extends Thread {
     }
 
     private void startServer() {
-        RequestHandlingService requestHandlingService = new RequestHandlingService(MainApp.sessionFactory);
+        RequestHandlingService requestHandlingService = new RequestHandlingService(sessionFactory);
         LOGGER.log( Level.INFO, "starting server" );
 
         try (

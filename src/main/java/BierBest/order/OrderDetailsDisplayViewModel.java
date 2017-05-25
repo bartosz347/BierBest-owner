@@ -1,27 +1,27 @@
 package BierBest.order;
 
-import javax.persistence.EntityManager;
-
-import static BierBest.MainApp.sessionFactory;
+import BierBest.DataOperationsService;
 
 public class OrderDetailsDisplayViewModel {
 
-    OrderViewModel orderViewModel = new OrderViewModel();
+    OrderViewModel orderViewModel;
+    private DataOperationsService dataOperationsService;
+
+    public OrderDetailsDisplayViewModel(DataOperationsService dataOperationsService) {
+        this.dataOperationsService = dataOperationsService;
+        this.orderViewModel = new OrderViewModel(dataOperationsService);
+    }
 
     public OrderViewModel getOrderViewModel() {
         return orderViewModel;
     }
 
     public void updateOrder(String newStatus, String newPrice) {
-        EntityManager entityManager = sessionFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-
         orderViewModel.getOrder().setStatusShopSide(newStatus);
         orderViewModel.getOrder().getBeerInfo().setPriceString(newPrice);
-        entityManager.merge(orderViewModel.getOrder());
 
-        entityManager.getTransaction().commit();
-        entityManager.close();
+        dataOperationsService.updateOrder(orderViewModel.getOrder());
+
         orderViewModel.loadDataFromOrderModel();
     }
 

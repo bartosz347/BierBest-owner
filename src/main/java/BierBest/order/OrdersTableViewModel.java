@@ -1,24 +1,26 @@
 package BierBest.order;
 
+import BierBest.DataOperationsService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class OrdersTableViewModel {
 
     private ObservableList<OrderViewModel> ordersData = FXCollections.observableArrayList();
-    private OrdersLoaderService ordersLoaderService = new OrdersLoaderService();
+    private DataOperationsService dataOperationsService;
 
 
-    public OrdersTableViewModel() {
+    public OrdersTableViewModel(DataOperationsService dataOperationsService) {
+        this.dataOperationsService = dataOperationsService;
         loadWithRejected();
     }
 
     public void loadWithRejected() {
-        this.ordersData = ordersLoaderService.loadData(true);
+        this.ordersData = dataOperationsService.getOrders(true);
 }
 
     public void loadWithoutRejected() {
-        this.ordersData = ordersLoaderService.loadData(false);
+        this.ordersData = dataOperationsService.getOrders(false);
     }
 
 

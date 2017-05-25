@@ -22,8 +22,6 @@ import java.util.Date;
 
 public class MainApp extends Application {
 
-
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
@@ -38,14 +36,49 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
-    public static EntityManagerFactory sessionFactory;
+    private static EntityManagerFactory sessionFactory;
+    public static DataOperationsService dataOperationsService;
     private static BierBestServer serverThread;
 
     public static void main(String[] args) {
-
         // Create an EMF
         sessionFactory = Persistence.createEntityManagerFactory( "BierBest-owner" );
 
+        loadSampleDataToDB();
+        dataOperationsService = new DataOperationsService(sessionFactory);
+
+        serverThread = new BierBestServer(sessionFactory);
+        serverThread.start();
+
+        launch(args);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        sessionFactory.close();
+        serverThread.close();
+    }
+
+    public void showClientDetails(ClientViewModel clientViewModel) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ClientDetailsScreen.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("client details");
+        stage.getIcons().add(new Image("BierBest/images/icon.png"));
+        ClientDetailsScreenView clientDetailsScreenView = fxmlLoader.getController();
+        clientDetailsScreenView.setClientViewModel(clientViewModel);
+        clientDetailsScreenView.setOwnStage(stage);
+        stage.show();
+    }
+
+    private static void loadSampleDataToDB() {
         // Generate some sample data
         try {
             EntityManager entityManager = sessionFactory.createEntityManager();
@@ -104,35 +137,5 @@ public class MainApp extends Application {
             System.out.println(e);
             return;
         }
-
-        serverThread = new BierBestServer();
-        serverThread.start();
-
-
-        launch(args);
-    }
-
-    @Override
-    public void stop() throws Exception {
-        sessionFactory.close();
-        serverThread.close();
-    }
-
-    public void showClientDetails(ClientViewModel clientViewModel) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ClientDetailsScreen.fxml"));
-        Parent root = null;
-        try {
-            root = fxmlLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("client details");
-        stage.getIcons().add(new Image("BierBest/images/icon.png"));
-        ((ClientDetailsScreenView)fxmlLoader.getController()).setClientViewModel(clientViewModel);
-        ((ClientDetailsScreenView)fxmlLoader.getController()).setOwnStage(stage);
-        stage.show();
     }
 }

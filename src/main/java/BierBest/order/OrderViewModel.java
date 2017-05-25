@@ -1,5 +1,6 @@
 package BierBest.order;
 
+import BierBest.DataOperationsService;
 import BierBest.client.ClientViewModel;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,19 +16,24 @@ public class OrderViewModel {
     }
 
     private OrderModel order = new OrderModel();
-    private ClientViewModel clientViewModel = new ClientViewModel();
+    private ClientViewModel clientViewModel;
+    private DataOperationsService dataOperationsService;
 
-    OrderViewModel() {
 
-    }
-
-    OrderViewModel(OrderModel order) {
+    public OrderViewModel(OrderModel order, DataOperationsService dataOperationsService) {
         this.order = order;
+        this.dataOperationsService = dataOperationsService;
+        this.clientViewModel = new ClientViewModel(dataOperationsService);
         loadDataFromOrderModel();
     }
 
+    public OrderViewModel(DataOperationsService dataOperationsService) {
+        this.dataOperationsService = dataOperationsService;
+        this.clientViewModel = new ClientViewModel(dataOperationsService);
+    }
+
     public void loadDataFromOrderModel() {
-        clientViewModel = new ClientViewModel(order.getClient());
+        clientViewModel = new ClientViewModel(order.getClient(), dataOperationsService);
         setId(order.getId());
         setDate(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM).format(order.getDate()));
         setStatusClientSide(order.getStatusClientSide());

@@ -1,7 +1,7 @@
 package BierBest.communication;
 
-import BierBest.communication.payloads.Payload;
 import BierBest.communication.payloads.MessageAction;
+import BierBest.communication.payloads.Payload;
 
 import java.io.Serializable;
 
