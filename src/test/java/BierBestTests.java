@@ -298,8 +298,6 @@ public class BierBestTests {
     public void GivenInvalidClientCredentialsWhenFetchingOrdersThenAccessDeniedCodeReturned() {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
-        ClientModel referenceClient;
-
         Request req = new Request("a_stephens","bad_password", MessageAction.GET_CLIENT_ORDERS, null);
         Response resp;
         resp = handlingService.handleRequest(req);
@@ -308,6 +306,93 @@ public class BierBestTests {
         assertEquals(resp.messageAction, MessageAction.GET_CLIENT_ORDERS);
         assertEquals(resp.getResponseCode(), resp.DENIED);
 
+    }
+
+    @Test
+    public void GivenValidClientCredentialsAndNewStatusWhenUpdatingOrderThenNewStatusIsSaved() {
+        RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
+
+        OrderModel order = new OrderModel();
+        order.setStatusClientSide("accepted");
+        order.setBeerInfo(new BeerInfo() {{
+            setName("another_beer");
+            setURL("https://untappd/some_beer");
+            setImgURL("http://www.anagram.pl/wp-content/uploads/krolweskie.jpg");
+            setPriceString("19.30");
+        }});
+        order.setDate(new Date());
+        order.setStatusShopSide("");
+
+        // we need to manually fetch order id before running the test
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        OrderModel fetchedOrder;
+        fetchedOrder = entityManager.createQuery("select p from product_order p JOIN client c ON c.id = p.client.id" +
+                " WHERE c.username = :a AND p.beerInfo.name = :b", OrderModel.class)
+                .setParameter("a", "a_stephens")
+                .setParameter("b",order.getBeerInfo().getName())
+                .getSingleResult();
+        entityManager.close();
+
+        order.setId(fetchedOrder.getId());
+
+        Request req = new Request("a_stephens","test", MessageAction.UPDATE_ORDER_STATUS, new OrderData(order));
+        Response resp;
+        resp = handlingService.handleRequest(req);
+
+        entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        fetchedOrder = null;
+        fetchedOrder = entityManager.createQuery("select p from product_order p JOIN client c ON c.id = p.client.id" +
+                " WHERE c.username = :a AND p.beerInfo.name = :b", OrderModel.class)
+                .setParameter("a", "a_stephens")
+                .setParameter("b",order.getBeerInfo().getName())
+                .getSingleResult();
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+        assertNull(resp.payload);
+        assertNotNull(fetchedOrder);
+        assertEquals(order.getStatusClientSide(), fetchedOrder.getStatusClientSide());
+        assertEquals(resp.messageAction,  MessageAction.UPDATE_ORDER_STATUS);
+        assertEquals(resp.getResponseCode(), resp.SUCCESS);
+    }
+
+    @Test
+    public void GivenInvalidClientCredentialsAndNewStatusWhenUpdatingOrderThenAccessDeniedCodeIsReturned() {
+        RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
+
+        OrderModel order = new OrderModel();
+        order.setStatusClientSide("accepted");
+        order.setBeerInfo(new BeerInfo() {{
+            setName("another_beer");
+            setURL("https://untappd/some_beer");
+            setImgURL("http://www.anagram.pl/wp-content/uploads/krolweskie.jpg");
+            setPriceString("19.30");
+        }});
+        order.setDate(new Date());
+        order.setStatusShopSide("");
+
+        Request req = new Request("a_stephens","bad_password", MessageAction.UPDATE_ORDER_STATUS, new OrderData(order));
+        Response resp;
+        resp = handlingService.handleRequest(req);
+
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        OrderModel fetchedOrder;
+        fetchedOrder = entityManager.createQuery("select p from product_order p JOIN client c ON c.id = p.client.id" +
+                " WHERE c.username = :a AND p.beerInfo.name = :b", OrderModel.class)
+                .setParameter("a", "a_stephens")
+                .setParameter("b",order.getBeerInfo().getName())
+                .getSingleResult();
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+        assertNull(resp.payload);
+        assertNotEquals(order.getStatusClientSide(), fetchedOrder.getStatusClientSide());
+        assertEquals(resp.messageAction, MessageAction.UPDATE_ORDER_STATUS);
+        assertEquals(resp.getResponseCode(), resp.DENIED);
     }
 
 

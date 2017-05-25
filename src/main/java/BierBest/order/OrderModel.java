@@ -42,6 +42,10 @@ public class OrderModel {
         this.id = id;
     }
 
+    public boolean isIdNull() {
+        return id == null;
+    }
+
     public ClientModel getClient() {
         return client;
     }

@@ -41,8 +41,6 @@ public class RequestHandlingService {
                 responseMessage = new Response(MessageAction.ADD_CLIENT, responseCode);
                 break;
             case GET_CLIENT_DATA:
-                // TODO refactor
-                // TODO better enum values for MessageAction, universal for request and response ?
                 ClientModel cl = getClient(incomingRequest.getUsername(), incomingRequest.getPassword());
                 if(cl != null)
                     responseMessage = new Response(MessageAction.GET_CLIENT_DATA, new ClientData(cl), Response.SUCCESS);
@@ -60,7 +58,10 @@ public class RequestHandlingService {
                 else
                     responseMessage = new Response(MessageAction.GET_CLIENT_ORDERS, null, Response.DENIED);
                 break;
-
+            case UPDATE_ORDER_STATUS:
+                responseCode = updateOrderStatus(incomingRequest.getUsername(), incomingRequest.getPassword(),((OrderData)incomingRequest.payload).order);
+                responseMessage = new Response(MessageAction.UPDATE_ORDER_STATUS, responseCode);
+                break;
             default:
                 throw new RuntimeException("unsupported payload type");
         }
@@ -68,6 +69,31 @@ public class RequestHandlingService {
         return responseMessage;
     }
 
+    private int updateOrderStatus(String username, String password, OrderModel order) {
+        if(!checkAuthorization(username, password))
+            return Response.DENIED;
+
+        if(order.isIdNull() || order.getId() < 0)
+            return Response.FAILED;
+
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        OrderModel fetchedOrder;
+        fetchedOrder = entityManager.createQuery("select p from product_order p JOIN client c ON c.id = p.client.id" +
+                " WHERE c.username = :username AND p.id = :id", OrderModel.class)
+                .setParameter("username", username)
+                .setParameter("id", order.getId())
+                .getSingleResult();
+
+        fetchedOrder.setStatusClientSide(order.getStatusClientSide());
+
+        entityManager.merge(fetchedOrder);
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+        return Response.SUCCESS;
+    }
 
     private int addOrder(OrderModel order, String username, String password) {
         ClientModel client = getClient(username, password);
