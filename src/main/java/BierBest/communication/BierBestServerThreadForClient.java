@@ -37,7 +37,7 @@ public class BierBestServerThreadForClient extends Thread {
             }
 
         } catch (EOFException eof) {
-            System.out.printf("connection ended by client");
+            LOGGER.log( Level.INFO, "connection ended by client" );
         } catch (Exception e) {
             System.out.println(e);
         }

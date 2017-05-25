@@ -9,7 +9,8 @@ public class Response implements Serializable {
     public static final int SUCCESS = 1;
     public static final int INVALID = 0;
     public static final int FAILED = -1;
-    public static final int DENIED = -2;
+    public static final int DENIED = 403;
+    public static final int NOT_FOUND = 404;
     public static final int NOT_SET = 999;
 
     public MessageAction messageAction;

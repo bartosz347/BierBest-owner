@@ -9,9 +9,4 @@ public class CommunicationCheck extends Payload implements Serializable {
         this.testData = testData;
     }
 
-    public CommunicationCheck() {
-        testData = "some test string";
-    }
-
-
 }

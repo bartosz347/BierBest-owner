@@ -4,6 +4,8 @@ import BierBest.communication.RequestHandlingService;
 import BierBest.communication.Response;
 import BierBest.communication.payloads.ClientData;
 import BierBest.communication.payloads.MessageAction;
+import BierBest.communication.payloads.OrderData;
+import BierBest.communication.payloads.Orders;
 import BierBest.order.BeerInfo;
 import BierBest.order.OrderModel;
 import org.junit.AfterClass;
@@ -15,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.*;
@@ -32,6 +35,7 @@ public class BierBestTests {
             EntityManager entityManager = sessionFactory.createEntityManager();
             entityManager.getTransaction().begin();
 
+            // Client1
             ClientModel client1 = new ClientModel();
             client1.setFirstName("Kate");
             client1.setLastName("Kowalski");
@@ -41,16 +45,18 @@ public class BierBestTests {
             client1.setRegistrationDate(new Date());
             entityManager.persist(client1);
 
+            // Client2
             ClientModel client2 = new ClientModel();
             client2.setFirstName("Andrew");
             client2.setLastName("Stephens");
             client2.setUsername("a_stephens");
+            client2.setHash("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08".toUpperCase());
             client2.setPhoneNumber("+74999333666");
             client2.setCity("New York");
             client2.setRegistrationDate(new Date());
             entityManager.persist(client2);
 
-
+            // Order1
             OrderModel order = new OrderModel();
             order.setStatusClientSide("new");
             order.setBeerInfo(new BeerInfo() {{
@@ -63,6 +69,7 @@ public class BierBestTests {
             order.setClient(client1);
             entityManager.persist(order);
 
+            // Order2 for client2
             order = new OrderModel();
             order.setStatusClientSide("new");
             order.setBeerInfo(new BeerInfo() {{
@@ -73,7 +80,20 @@ public class BierBestTests {
             }});
             order.setDate(new Date());
             order.setStatusShopSide("rejected");
+            order.setClient(client2);
+            entityManager.persist(order);
 
+            // Order3 for client2
+            order = new OrderModel();
+            order.setStatusClientSide("new");
+            order.setBeerInfo(new BeerInfo() {{
+                setName("another_beer");
+                setURL("https://untappd/some_beer");
+                setImgURL("http://www.anagram.pl/wp-content/uploads/krolweskie.jpg");
+                setPriceString("19.30");
+            }});
+            order.setDate(new Date());
+            order.setStatusShopSide("");
             order.setClient(client2);
             entityManager.persist(order);
 
@@ -104,8 +124,8 @@ public class BierBestTests {
         resp = handlingService.handleRequest(req);
 
         assertTrue(resp instanceof Response);
-        assertEquals(resp.messageAction, MessageAction.RESPONSE_CODE);
-        assertEquals(((Response)resp).getResponseCode(),  resp.SUCCESS);
+        assertEquals(resp.messageAction, MessageAction.CHECK_USERNAME);
+        assertEquals(resp.getResponseCode(), resp.SUCCESS);
     }
 
     @Test
@@ -117,11 +137,10 @@ public class BierBestTests {
         resp = handlingService.handleRequest(req);
 
         assertTrue(resp instanceof Response);
-        assertEquals(resp.messageAction, MessageAction.RESPONSE_CODE);
-        assertEquals(((Response)resp).getResponseCode(),  resp.INVALID);
+        assertEquals(resp.messageAction, MessageAction.CHECK_USERNAME);
+        assertEquals(resp.getResponseCode(), resp.INVALID);
     }
 
-    //Given[ExplainYourInput]When[WhatIsDone]Then[ExpectedResult]
     @Test
     public void GivenClientDataWhenAddRequestedThenDataIsSaved() {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
@@ -154,7 +173,7 @@ public class BierBestTests {
 
         assertNotNull(fetchedClient);
         Assert.assertThat(clientData.client, samePropertyValuesAs(fetchedClient));
-        assertEquals(resp.messageAction,  MessageAction.RESPONSE_CODE);
+        assertEquals(resp.messageAction,  MessageAction.ADD_CLIENT);
         assertEquals(resp.getResponseCode(), resp.SUCCESS);
     }
 
@@ -183,6 +202,115 @@ public class BierBestTests {
         assertEquals(resp.messageAction, MessageAction.GET_CLIENT_DATA);
         assertEquals(resp.getResponseCode(), resp.SUCCESS);
     }
+
+    @Test
+    public void GivenInvalidClientCredentialsWhenClientDataRequestedThenAccesDeniedCodeIsReturned() {
+        RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
+
+        Request req = new Request("a_nowak","BAD_PASSWORD", MessageAction.GET_CLIENT_DATA, null);
+        Response resp;
+        resp = handlingService.handleRequest(req);
+
+        assertNull(resp.payload);
+        assertEquals(resp.messageAction, MessageAction.GET_CLIENT_DATA);
+        assertEquals(resp.getResponseCode(), resp.DENIED);
+    }
+
+    @Test
+    public void GivenValidClientCredentialsWhenAddingNewOrderThenOrderIsSaved() {
+        RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
+
+        OrderModel newOrder = new OrderModel();
+        newOrder.setStatusClientSide("new");
+        BeerInfo beerInfo = new BeerInfo() {{
+            setName("some beer");
+            setPriceString("12.30");
+            setURL("http://example.com/");
+            setImgURL("http://example.com/img.jpg");
+        }};
+        newOrder.setBeerInfo(beerInfo);
+
+        Request req = new Request("a_nowak", "secret_password", MessageAction.ADD_ORDER, new OrderData(newOrder));
+        Response resp;
+        resp = handlingService.handleRequest(req);
+
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        OrderModel fetchedOrder;
+        fetchedOrder = entityManager.createQuery("select p from product_order p JOIN client c ON c.id = p.client.id WHERE c.username = :a", OrderModel.class).setParameter("a", "a_nowak").getSingleResult();
+
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+        assertNull(resp.payload);
+        assertEquals(newOrder.getBeerInfo(), beerInfo);
+        assertEquals("a_nowak", fetchedOrder.getClient().getUsername());
+        assertEquals(resp.messageAction,  MessageAction.ADD_ORDER);
+        assertEquals(resp.getResponseCode(), resp.SUCCESS);
+    }
+
+    @Test
+    public void GivenInvalidClientCredentialsWhenAddingNewOrderThenAccessDeniedCodeIsReturned() {
+        RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
+
+        OrderModel newOrder = new OrderModel();
+        newOrder.setStatusClientSide("new");
+        BeerInfo beerInfo = new BeerInfo() {{
+            setName("some beer");
+            setPriceString("12.30");
+            setURL("http://example.com/");
+            setImgURL("http://example.com/img.jpg");
+        }};
+        newOrder.setBeerInfo(beerInfo);
+
+        Request req = new Request("a_nowak", "BAD_PASSWORD", MessageAction.ADD_ORDER, new OrderData(newOrder));
+        Response resp;
+        resp = handlingService.handleRequest(req);
+
+        assertNull(resp.payload);
+        assertEquals(resp.messageAction, MessageAction.ADD_ORDER);
+        assertEquals(resp.getResponseCode(), resp.DENIED);
+    }
+
+    @Test
+    public void GivenValidClientCredentialsWhenFetchingOrdersThenOrdersAreReturned() {
+        RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
+
+        ClientModel referenceClient;
+
+        Request req = new Request("a_stephens","test", MessageAction.GET_CLIENT_ORDERS, null);
+        Response resp;
+        resp = handlingService.handleRequest(req);
+
+        List<OrderModel> orders = ((Orders)resp.payload).orders;
+
+        assertNotNull(resp.payload);
+        assertTrue(resp.payload instanceof Orders);
+        assertEquals(2, orders.size());
+        assertEquals("some_beer", orders.get(0).getBeerInfo().getName());
+        assertEquals("another_beer", orders.get(1).getBeerInfo().getName());
+        assertEquals(resp.messageAction, MessageAction.GET_CLIENT_ORDERS);
+        assertEquals(resp.getResponseCode(), resp.SUCCESS);
+    }
+
+    @Test
+    public void GivenInvalidClientCredentialsWhenFetchingOrdersThenAccessDeniedCodeReturned() {
+        RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
+
+        ClientModel referenceClient;
+
+        Request req = new Request("a_stephens","bad_password", MessageAction.GET_CLIENT_ORDERS, null);
+        Response resp;
+        resp = handlingService.handleRequest(req);
+
+        assertNull(resp.payload);
+        assertEquals(resp.messageAction, MessageAction.GET_CLIENT_ORDERS);
+        assertEquals(resp.getResponseCode(), resp.DENIED);
+
+    }
+
+
 }
 
 

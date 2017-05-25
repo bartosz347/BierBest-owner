@@ -1,16 +1,18 @@
 package BierBest.communication;
 
 import BierBest.client.ClientModel;
-import BierBest.communication.payloads.ClientData;
-import BierBest.communication.payloads.CommunicationCheck;
-import BierBest.communication.payloads.MessageAction;
+import BierBest.communication.payloads.*;
+import BierBest.order.OrderModel;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.List;
 
 public class RequestHandlingService {
 
@@ -26,27 +28,39 @@ public class RequestHandlingService {
         switch (incomingRequest.messageAction) {
             case COMMUNICATION_CHECK:
                 System.out.println(((CommunicationCheck) incomingRequest.payload).testData);
+                new Response(MessageAction.COMMUNICATION_CHECK,new CommunicationCheck("pong"), Response.SUCCESS);
                 break;
             case CHECK_USERNAME:
                 if(checkProposedUsername(incomingRequest.getUsername()))
-                    responseMessage = new Response(MessageAction.RESPONSE_CODE, Response.SUCCESS);
+                    responseMessage = new Response(MessageAction.CHECK_USERNAME, Response.SUCCESS);
                 else
-                    responseMessage = new Response(MessageAction.RESPONSE_CODE, Response.INVALID);
+                    responseMessage = new Response(MessageAction.CHECK_USERNAME, Response.INVALID);
                 break;
             case ADD_CLIENT:
                 responseCode = addClient(((ClientData)incomingRequest.payload).client,incomingRequest.getPassword());
-                responseMessage = new Response(MessageAction.RESPONSE_CODE, responseCode);
+                responseMessage = new Response(MessageAction.ADD_CLIENT, responseCode);
                 break;
             case GET_CLIENT_DATA:
                 // TODO refactor
                 // TODO better enum values for MessageAction, universal for request and response ?
                 ClientModel cl = getClient(incomingRequest.getUsername(), incomingRequest.getPassword());
                 if(cl != null)
-                    responseCode = Response.SUCCESS;
+                    responseMessage = new Response(MessageAction.GET_CLIENT_DATA, new ClientData(cl), Response.SUCCESS);
                 else
-                    responseCode = Response.FAILED;
-                responseMessage = new Response(MessageAction.GET_CLIENT_DATA, new ClientData(cl), responseCode);
+                    responseMessage = new Response(MessageAction.GET_CLIENT_DATA, null, Response.DENIED);
                 break;
+            case ADD_ORDER:
+                responseCode = addOrder(((OrderData)incomingRequest.payload).order, incomingRequest.getUsername(), incomingRequest.getPassword());
+                responseMessage = new Response(MessageAction.ADD_ORDER, responseCode);
+                break;
+            case GET_CLIENT_ORDERS:
+                List<OrderModel> orders = getOrders(incomingRequest.getUsername(), incomingRequest.getPassword());
+                if(orders != null)
+                    responseMessage = new Response(MessageAction.GET_CLIENT_ORDERS, new Orders(orders), Response.SUCCESS);
+                else
+                    responseMessage = new Response(MessageAction.GET_CLIENT_ORDERS, null, Response.DENIED);
+                break;
+
             default:
                 throw new RuntimeException("unsupported payload type");
         }
@@ -54,6 +68,27 @@ public class RequestHandlingService {
         return responseMessage;
     }
 
+
+    private int addOrder(OrderModel order, String username, String password) {
+        ClientModel client = getClient(username, password);
+        if(client == null)
+            return Response.DENIED;
+
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+
+        order.setClient(client);
+        order.setStatusClientSide("new");
+        order.setStatusShopSide("");
+        order.setDate(new Date());
+
+        entityManager.persist(order);
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+        return Response.SUCCESS;
+    }
 
     private boolean checkProposedUsername(String username) {
         EntityManager entityManager = sessionFactory.createEntityManager();
@@ -86,20 +121,59 @@ public class RequestHandlingService {
 
 
     private ClientModel getClient(String username, String password) {
-        ClientModel client = null;
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        ClientModel fetchedClient = entityManager.createQuery( "from client where username = :username AND hash = :hash", ClientModel.class )
-                .setParameter("username", username)
-                .setParameter("hash", getHash(password))
-                .getSingleResult();
+        ClientModel fetchedClient;
+        try {
+            fetchedClient = entityManager.createQuery("from client where username = :username AND hash = :hash", ClientModel.class)
+                    .setParameter("username", username)
+                    .setParameter("hash", getHash(password))
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            fetchedClient = null;
+        }
         entityManager.getTransaction().commit();
         entityManager.close();
-
 
         return fetchedClient;
     }
 
+    private boolean checkAuthorization(String username, String password) {
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        ClientModel fetchedClient;
+        try {
+            fetchedClient = entityManager.createQuery("from client where username = :username AND hash = :hash", ClientModel.class)
+                    .setParameter("username", username)
+                    .setParameter("hash", getHash(password))
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return false;
+        } finally {
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        }
+
+        if(fetchedClient.getUsername().equals(username))
+            return true;
+
+        return false;
+    }
+
+    private List<OrderModel> getOrders(String username, String password) {
+        if(!checkAuthorization(username,password))
+            return null;
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        List<OrderModel> fetchedOrders = null;
+        fetchedOrders = entityManager.createQuery("select p from product_order p JOIN client c ON c.id = p.client.id" +
+                " WHERE c.username = :user", OrderModel.class).setParameter("user", username).getResultList();
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+        return fetchedOrders;
+    }
 
     private String getHash(String password) {
         String hash = "";
