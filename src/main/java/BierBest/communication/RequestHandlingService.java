@@ -132,6 +132,8 @@ public class RequestHandlingService {
 
     private int addClient(ClientModel client, String password) {
         EntityManager entityManager = sessionFactory.createEntityManager();
+        if(!checkProposedUsername(client.getUsername()))
+            return Response.FAILED;
         entityManager.getTransaction().begin();
 
 

@@ -18,6 +18,7 @@ public class BierBestServerThreadForClient extends Thread {
     public BierBestServerThreadForClient(String name, Socket clientSocket, RequestHandlingService requestHandlingService) {
         super(name);
         this.clientSocket = clientSocket;
+        this.requestHandlingService = requestHandlingService;
     }
 
     @Override

@@ -4,10 +4,11 @@ import BierBest.client.ClientModel;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity (name = "product_order")
-public class OrderModel {
+public class OrderModel implements Serializable {
 
     @Id
     @GeneratedValue

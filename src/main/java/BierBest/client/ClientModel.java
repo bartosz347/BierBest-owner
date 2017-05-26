@@ -6,10 +6,11 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity (name = "client")
-public class ClientModel {
+public class ClientModel implements Serializable {
 
     public ClientModel() {
 

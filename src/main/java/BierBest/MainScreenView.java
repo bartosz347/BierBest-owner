@@ -76,7 +76,7 @@ public class MainScreenView implements Initializable {
         ordersTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) handleShowClientDetails();
         });
-        beerURLHyperlink.setOnMouseClicked(event -> mainApp.getHostServices().showDocument(beerURLHyperlink.getText())  );
+        beerURLHyperlink.setOnMouseClicked(event -> mainApp.getHostServices().showDocument(beerURLHyperlink.getText()));
 
         orderIdColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         clientNameColumn.setCellValueFactory(cellData -> cellData.getValue().getClientViewModel().nameProperty());
@@ -86,7 +86,7 @@ public class MainScreenView implements Initializable {
 
         ordersTableViewModel.load(true);
         ordersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                    if(newValue != null) {
+                    if (newValue != null) {
                         orderDetailsDisplayViewModel.load(newValue);
                         refresh();
                     }
@@ -105,14 +105,14 @@ public class MainScreenView implements Initializable {
 
         clientSideStatusLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().statusClientSideProperty());
 
-         if(!orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL().isEmpty()) {
+        if (!orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL().isEmpty()) {
             new Thread(() -> {
                 img = new Image("BierBest/images/placeholder.png");
                 img = new Image(orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL());
                 Platform.runLater(() -> beerImageView.imageProperty().setValue(img));
             }).start();
-
         }
+
         beerNameLabel.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerName());
         beerURLHyperlink.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerURL());
         beerPriceField.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerPrice());
@@ -127,8 +127,13 @@ public class MainScreenView implements Initializable {
 
     @FXML
     private void handleShowClientDetails() {
-        mainApp.showClientDetails(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel());
+        mainApp.showClientDetails(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel(), false);
 
+    }
+
+    @FXML
+    private void handleEditClientDetails() {
+        mainApp.showClientDetails(orderDetailsDisplayViewModel.getOrderViewModel().getClientViewModel(), true);
     }
 
     @FXML
@@ -136,11 +141,17 @@ public class MainScreenView implements Initializable {
         ordersTable.getSelectionModel().clearSelection();
         ordersTableViewModel.load(showRejectedCheck.isSelected());
 
-        //ordersTable.setItems(ordersTableViewModel.getOrdersData());
     }
 
-    public void dd(ObservableList<OrderViewModel> list) {
+    @FXML
+    private void handleRefreshOrdersList() {
+        ordersTable.getSelectionModel().clearSelection();
+        ordersTableViewModel.load(showRejectedCheck.isSelected());
+    }
+
+    public void setTableItems(ObservableList<OrderViewModel> list) {
         ordersTable.setItems(list);
+        refresh();
     }
 
 

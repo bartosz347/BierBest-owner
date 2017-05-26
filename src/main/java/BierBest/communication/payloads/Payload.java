@@ -1,5 +1,7 @@
 package BierBest.communication.payloads;
 
-public abstract class Payload {
+import java.io.Serializable;
+
+public abstract class Payload implements Serializable {
 
 }

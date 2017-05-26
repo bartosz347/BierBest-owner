@@ -1,6 +1,8 @@
 package BierBest.communication.payloads;
 
-public enum MessageAction {
+import java.io.Serializable;
+
+public enum MessageAction implements Serializable {
     CHECK_USERNAME,
     ADD_CLIENT,
     GET_CLIENT_DATA,

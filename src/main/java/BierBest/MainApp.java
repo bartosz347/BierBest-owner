@@ -2,6 +2,7 @@ package BierBest;
 
 import BierBest.client.ClientModel;
 import BierBest.client.ClientViewModel;
+import BierBest.communication.BierBestClientSimulator;
 import BierBest.communication.BierBestServer;
 import BierBest.order.BeerInfo;
 import BierBest.order.OrderModel;
@@ -16,6 +17,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 
@@ -42,11 +45,20 @@ public class MainApp extends Application {
     public static void main(String[] args) {
         // Create an EMF
         sessionFactory = Persistence.createEntityManagerFactory( "BierBest-owner" );
-
-        loadSampleDataToDB();
-
         serverThread = new BierBestServer(sessionFactory);
         serverThread.start();
+
+        new Thread(() -> {
+            try {
+                BierBestClientSimulator bierBestClientSimulator = new BierBestClientSimulator();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        //loadSampleDataToDB();
 
         launch(args);
     }
@@ -57,8 +69,8 @@ public class MainApp extends Application {
         serverThread.close();
     }
 
-    public void showClientDetails(ClientViewModel clientViewModel) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ClientDetailsScreen.fxml"));
+    public void showClientDetails(ClientViewModel clientViewModel, boolean allowEditing) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(allowEditing ? "ClientDetailsScreen.fxml": "ClientDetailsScreenReadOnly.fxml"));
         Parent root = null;
         try {
             root = fxmlLoader.load();
@@ -77,10 +89,17 @@ public class MainApp extends Application {
     }
 
     private static void loadSampleDataToDB() {
+        // Generate some sample data connecting as client
+
+
+
+
         // Generate some sample data
         try {
             EntityManager entityManager = sessionFactory.createEntityManager();
             entityManager.getTransaction().begin();
+
+
 
             ClientModel client1 = new ClientModel();
             client1.setFirstName("Kate");

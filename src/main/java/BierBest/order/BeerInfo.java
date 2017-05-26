@@ -4,9 +4,10 @@ package BierBest.order;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Embeddable
-public class BeerInfo {
+public class BeerInfo implements Serializable {
 
     @Column(name = "beer_name")
     protected String name;
