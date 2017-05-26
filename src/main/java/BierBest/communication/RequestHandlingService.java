@@ -106,6 +106,7 @@ public class RequestHandlingService {
         order.setClient(client);
         order.setStatusClientSide("new");
         order.setStatusShopSide("");
+        order.getBeerInfo().setPriceString("0.00");
         order.setDate(new Date());
 
         entityManager.persist(order);

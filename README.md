@@ -17,11 +17,11 @@ Aplikacja wspiera proces zamawiania piwa przez sieć.
  - projekt Gradle
  - w katalogu `src\main\resources` umieścić plik konfiguracyjny `persistence.xml`
  - w parametrach VM podać ścieżkę do keyStore (PKCS#12) oraz hasło do klucza:  
-        `Djavax.net.ssl.keyStorePassword="" -Djavax.net.ssl.keyStore=""`
+        `-Djavax.net.ssl.keyStorePassword="" -Djavax.net.ssl.keyStore=""`
  - główna klasa to MainApp, tam znajduje się funkcja main
  
- 
- W domyślnej konfiguracji aplikacja przy każdym uruchomieniu usunie poprzednie tabele i stworzy nowe. Za pomocą `BierBestClientSimulator` dodane zostaną testowe dane - tak jakby dodawał je użytkownik z aplikacji "klient"  
+ g
+ W domyślnej konfiguracji aplikacja przy każdym uruchomieniu usunie poprzednie tabele i stworzy nowe. Za pomocą `BierBestClientSimulator` dodane zostaną testowe dane - tak jakby dodawał je użytkownik z aplikacji "klient". Za pomocą przycisku `Refresh` można wymusić pobranie danych z bazy.  
  Testy jednostkowe sprawdzają i demonstrują działanie komunikacji między serwerem a klientami.
  
       

@@ -61,7 +61,7 @@ public class ClientViewModel {
         client.setRegistrationDate(regDateFormat.parse(this.getRegistrationDate()));
         client.setCity(this.getCity());
         client.setPhoneNumber(this.getPhoneNumber());
-        client.setUsername(this.getUsername()); // todo verify if unique
+        client.setUsername(this.getUsername()); // username changing not allowed, blocked in edit dialog
         client.setEmail(this.getEmail());
         client.setAddress(this.getAddress());
 

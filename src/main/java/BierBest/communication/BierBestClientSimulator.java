@@ -38,7 +38,7 @@ public class BierBestClientSimulator {
     public BierBestClientSimulator() throws NoSuchAlgorithmException, KeyManagementException {
         System.out.println("starting client");
 
-        // Dumb trust manager that does not verify if we trust certificate's CA
+        // Dumb trust manager that does not verify if we trust certificate's CA - temporary
         final TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager() {
             @Override
             public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
@@ -102,7 +102,6 @@ public class BierBestClientSimulator {
         order.setStatusClientSide("new");
         BeerInfo beerInfo = new BeerInfo();
         beerInfo.setName("Pamperifko");
-        beerInfo.setPriceString("33.16");
         beerInfo.setURL("https://example.com/pamperifko");
         beerInfo.setImgURL("https://scontent.fwaw3-1.fna.fbcdn.net/v/t1.0-9/14316725_1206873812697643_1428947998854593240_n.jpg?oh=8a110acf4e63b59177aaeffe46dacc4d&oe=59B6016B");
         order.setBeerInfo(beerInfo);
@@ -128,7 +127,6 @@ public class BierBestClientSimulator {
         order.setStatusClientSide("new");
         beerInfo = new BeerInfo();
         beerInfo.setName("Kormoran");
-        beerInfo.setPriceString("13.80");
         beerInfo.setURL("https://example.com/Kormoran");
         beerInfo.setImgURL("http://2.bp.blogspot.com/-_j6bGKjBBrs/TgebGWRx1dI/AAAAAAAAAu4/ZAH6ZycPPyk/s1600/Kormoran+Jasne+Mocno+Chmielone.jpg");
         order.setBeerInfo(beerInfo);
