@@ -25,11 +25,12 @@ public class GetOrdersTask extends Task {
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
         List<OrderModel> result;
-        if(loadRejected)
-            result = entityManager.createQuery( "from product_order", OrderModel.class ).getResultList();
-        else
-            result = entityManager.createQuery( "from product_order p WHERE p.statusShopSide <> 'rejected' OR p.statusShopSide IS NULL", OrderModel.class ).getResultList();
-        for ( OrderModel order : result ) {
+        if (loadRejected) {
+            result = entityManager.createQuery("from product_order", OrderModel.class).getResultList();
+        } else {
+            result = entityManager.createQuery("from product_order p WHERE p.statusShopSide <> 'rejected' OR p.statusShopSide IS NULL", OrderModel.class).getResultList();
+        }
+        for (OrderModel order : result) {
             ordersData.add(new OrderViewModel(order));
         }
         entityManager.getTransaction().commit();

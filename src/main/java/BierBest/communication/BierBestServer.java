@@ -15,12 +15,12 @@ public class BierBestServer extends Thread {
 
     // PKCS#12 file containing certificate and private key
     // setup here
-        //System.setProperty("javax.net.ssl.keyStore", "...");
-        //System.setProperty("javax.net.ssl.keyStorePassword", "...");
+    //System.setProperty("javax.net.ssl.keyStore", "...");
+    //System.setProperty("javax.net.ssl.keyStorePassword", "...");
     // or in VM options
-        //-Djavax.net.ssl.keyStorePassword="..." -Djavax.net.ssl.keyStore="..."
+    //-Djavax.net.ssl.keyStorePassword="..." -Djavax.net.ssl.keyStore="..."
 
-    private static final Logger LOGGER = Logger.getLogger( TypeData.ClassName.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
     private static final int PORT = 4488;
     private ServerSocket serverSocket;
     private EntityManagerFactory sessionFactory;
@@ -37,16 +37,17 @@ public class BierBestServer extends Thread {
 
     public void close() {
         try {
-            if(!serverSocket.isClosed())
+            if (!serverSocket.isClosed()) {
                 serverSocket.close();
+            }
         } catch (IOException e) {
-            LOGGER.log( Level.INFO, "cannot stop server" );
+            LOGGER.log(Level.INFO, "cannot stop server");
         }
     }
 
     private void startServer() {
         RequestHandlingService requestHandlingService = new RequestHandlingService(sessionFactory);
-        LOGGER.log( Level.INFO, "starting server" );
+        LOGGER.log(Level.INFO, "starting server");
 
         try (
                 //serverSocket = new ServerSocket(PORT); // without SSL
@@ -60,10 +61,11 @@ public class BierBestServer extends Thread {
             }
 
         } catch (Exception e) {
-            if(e.getMessage().equals("socket closed"))
-                LOGGER.log( Level.INFO, "server stopped" );
-            else
-                LOGGER.log( Level.INFO, "server error" );
+            if (e.getMessage().equals("socket closed")) {
+                LOGGER.log(Level.INFO, "server stopped");
+            } else {
+                LOGGER.log(Level.INFO, "server error");
+            }
         }
     }
 }

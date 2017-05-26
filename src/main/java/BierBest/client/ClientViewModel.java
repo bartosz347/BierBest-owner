@@ -16,18 +16,18 @@ import static BierBest.MainApp.sessionFactory;
 
 
 public class ClientViewModel {
-    private static final Logger LOGGER = Logger.getLogger( TypeData.ClassName.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
 
     private ClientModel client;
 
-    private StringProperty name = new SimpleStringProperty(this,"name","");
-    private StringProperty registrationDate = new SimpleStringProperty(this,"registrationDate","");
-    private StringProperty city =  new SimpleStringProperty(this,"city","");
-    private StringProperty phoneNumber =  new SimpleStringProperty(this,"phoneNumber","");
+    private StringProperty name = new SimpleStringProperty(this, "name", "");
+    private StringProperty registrationDate = new SimpleStringProperty(this, "registrationDate", "");
+    private StringProperty city = new SimpleStringProperty(this, "city", "");
+    private StringProperty phoneNumber = new SimpleStringProperty(this, "phoneNumber", "");
 
-    private StringProperty username = new SimpleStringProperty(this,"username","");
-    private StringProperty email = new SimpleStringProperty(this,"email","");
-    private StringProperty address = new SimpleStringProperty(this,"address","");
+    private StringProperty username = new SimpleStringProperty(this, "username", "");
+    private StringProperty email = new SimpleStringProperty(this, "email", "");
+    private StringProperty address = new SimpleStringProperty(this, "address", "");
 
     public ClientViewModel() {
 
@@ -53,8 +53,9 @@ public class ClientViewModel {
 
     public void saveDataToClientModel() throws ParseException {
         StringTokenizer st = new StringTokenizer(this.getName());
-        if(st.countTokens() > 2)
+        if (st.countTokens() > 2) {
             throw new ParseException("invalid name", 0);
+        }
         client.setFirstName(st.nextToken());
         client.setLastName(st.nextToken());
         DateFormat regDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -66,7 +67,7 @@ public class ClientViewModel {
         client.setAddress(this.getAddress());
 
         final UpdateModelsTask updateModelsTask = new UpdateModelsTask(sessionFactory, client);
-        updateModelsTask.setOnSucceeded(ev -> LOGGER.log(Level.INFO,"client updated successfully"));
+        updateModelsTask.setOnSucceeded(ev -> LOGGER.log(Level.INFO, "client updated successfully"));
         Thread backgroundThread = new Thread(updateModelsTask);
         backgroundThread.setDaemon(true);
         backgroundThread.start();

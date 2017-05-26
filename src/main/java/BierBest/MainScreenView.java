@@ -74,7 +74,9 @@ public class MainScreenView implements Initializable {
         beerStatusBox.setItems(shopSideStatuses);
 
         ordersTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) handleShowClientDetails();
+            if (event.getClickCount() == 2) {
+                handleShowClientDetails();
+            }
         });
         beerURLHyperlink.setOnMouseClicked(event -> mainApp.getHostServices().showDocument(beerURLHyperlink.getText()));
 
@@ -153,9 +155,6 @@ public class MainScreenView implements Initializable {
         ordersTable.setItems(list);
         refresh();
     }
-
-
-
 
 
 }

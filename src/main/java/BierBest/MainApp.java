@@ -15,15 +15,14 @@ import javax.persistence.Persistence;
 import java.io.IOException;
 
 
-
 public class MainApp extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
         Parent root = fxmlLoader.load();
 
-        ((MainScreenView)fxmlLoader.getController()).mainApp = this;
+        ((MainScreenView) fxmlLoader.getController()).mainApp = this;
 
         primaryStage.getIcons().add(new Image("BierBest/images/icon.png"));
         primaryStage.setTitle("BierBEST backoffice");
@@ -37,7 +36,7 @@ public class MainApp extends Application {
 
     public static void main(String[] args) {
         // Create an EMF
-        sessionFactory = Persistence.createEntityManagerFactory( "BierBest-owner" );
+        sessionFactory = Persistence.createEntityManagerFactory("BierBest-owner");
         serverThread = new BierBestServer(sessionFactory);
         serverThread.start();
 
@@ -59,7 +58,7 @@ public class MainApp extends Application {
     }
 
     public void showClientDetails(ClientViewModel clientViewModel, boolean allowEditing) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(allowEditing ? "ClientDetailsScreen.fxml": "ClientDetailsScreenReadOnly.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(allowEditing ? "ClientDetailsScreen.fxml" : "ClientDetailsScreenReadOnly.fxml"));
         Parent root = null;
         try {
             root = fxmlLoader.load();

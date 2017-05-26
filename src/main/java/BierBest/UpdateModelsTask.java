@@ -24,12 +24,14 @@ public class UpdateModelsTask extends Task {
 
     @Override
     protected Object call() throws Exception {
-        if(client != null)
+        if (client != null) {
             updateClient();
-        if(order != null)
+        }
+        if (order != null) {
             updateOrder();
-        else
+        } else {
             throw new Exception("nothing to do");
+        }
 
         return null;
     }

@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class BierBestServerThreadForClient extends Thread {
 
     private RequestHandlingService requestHandlingService;
-    private static final Logger LOGGER = Logger.getLogger( TypeData.ClassName.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
     private Socket clientSocket;
 
     public BierBestServerThreadForClient(String name, Socket clientSocket, RequestHandlingService requestHandlingService) {
@@ -23,7 +23,7 @@ public class BierBestServerThreadForClient extends Thread {
 
     @Override
     public void run() {
-        LOGGER.log(Level.INFO, "starting new thread for a client from "+clientSocket.getInetAddress());
+        LOGGER.log(Level.INFO, "starting new thread for a client from " + clientSocket.getInetAddress());
 
         try (
                 ObjectOutputStream outToClient = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -33,12 +33,13 @@ public class BierBestServerThreadForClient extends Thread {
             Response responseToSend;
             while ((incomingRequest = (Request) inFromClient.readObject()) != null) {
                 responseToSend = requestHandlingService.handleRequest(incomingRequest);
-                if (responseToSend != null)
+                if (responseToSend != null) {
                     outToClient.writeObject(responseToSend);
+                }
             }
 
         } catch (EOFException eof) {
-            LOGGER.log( Level.INFO, "connection ended by client" );
+            LOGGER.log(Level.INFO, "connection ended by client");
         } catch (Exception e) {
             System.out.println(e);
         }

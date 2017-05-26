@@ -8,10 +8,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OrderDetailsDisplayViewModel {
-    private static final Logger LOGGER = Logger.getLogger( TypeData.ClassName.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
     OrderViewModel orderViewModel;
 
-    public OrderDetailsDisplayViewModel( ) {
+    public OrderDetailsDisplayViewModel() {
         this.orderViewModel = new OrderViewModel();
     }
 
@@ -24,7 +24,7 @@ public class OrderDetailsDisplayViewModel {
         orderViewModel.getOrder().getBeerInfo().setPriceString(newPrice);
 
         final UpdateModelsTask updateModelsTask = new UpdateModelsTask(MainApp.sessionFactory, orderViewModel.getOrder());
-        updateModelsTask.setOnSucceeded(ev -> LOGGER.log(Level.INFO,"order updated successfully"));
+        updateModelsTask.setOnSucceeded(ev -> LOGGER.log(Level.INFO, "order updated successfully"));
         Thread backgroundThread = new Thread(updateModelsTask);
         backgroundThread.setDaemon(true);
         backgroundThread.start();

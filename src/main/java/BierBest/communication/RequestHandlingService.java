@@ -28,38 +28,41 @@ public class RequestHandlingService {
         switch (incomingRequest.messageAction) {
             case COMMUNICATION_CHECK:
                 System.out.println(((CommunicationCheck) incomingRequest.payload).testData);
-                new Response(MessageAction.COMMUNICATION_CHECK,new CommunicationCheck("pong"), Response.SUCCESS);
+                new Response(MessageAction.COMMUNICATION_CHECK, new CommunicationCheck("pong"), Response.SUCCESS);
                 break;
             case CHECK_USERNAME:
-                if(checkProposedUsername(incomingRequest.getUsername()))
+                if (checkProposedUsername(incomingRequest.getUsername())) {
                     responseMessage = new Response(MessageAction.CHECK_USERNAME, Response.SUCCESS);
-                else
+                } else {
                     responseMessage = new Response(MessageAction.CHECK_USERNAME, Response.INVALID);
+                }
                 break;
             case ADD_CLIENT:
-                responseCode = addClient(((ClientData)incomingRequest.payload).client,incomingRequest.getPassword());
+                responseCode = addClient(((ClientData) incomingRequest.payload).client, incomingRequest.getPassword());
                 responseMessage = new Response(MessageAction.ADD_CLIENT, responseCode);
                 break;
             case GET_CLIENT_DATA:
                 ClientModel cl = getClient(incomingRequest.getUsername(), incomingRequest.getPassword());
-                if(cl != null)
+                if (cl != null) {
                     responseMessage = new Response(MessageAction.GET_CLIENT_DATA, new ClientData(cl), Response.SUCCESS);
-                else
+                } else {
                     responseMessage = new Response(MessageAction.GET_CLIENT_DATA, null, Response.DENIED);
+                }
                 break;
             case ADD_ORDER:
-                responseCode = addOrder(((OrderData)incomingRequest.payload).order, incomingRequest.getUsername(), incomingRequest.getPassword());
+                responseCode = addOrder(((OrderData) incomingRequest.payload).order, incomingRequest.getUsername(), incomingRequest.getPassword());
                 responseMessage = new Response(MessageAction.ADD_ORDER, responseCode);
                 break;
             case GET_CLIENT_ORDERS:
                 List<OrderModel> orders = getOrders(incomingRequest.getUsername(), incomingRequest.getPassword());
-                if(orders != null)
+                if (orders != null) {
                     responseMessage = new Response(MessageAction.GET_CLIENT_ORDERS, new Orders(orders), Response.SUCCESS);
-                else
+                } else {
                     responseMessage = new Response(MessageAction.GET_CLIENT_ORDERS, null, Response.DENIED);
+                }
                 break;
             case UPDATE_ORDER_STATUS:
-                responseCode = updateOrderStatus(incomingRequest.getUsername(), incomingRequest.getPassword(),((OrderData)incomingRequest.payload).order);
+                responseCode = updateOrderStatus(incomingRequest.getUsername(), incomingRequest.getPassword(), ((OrderData) incomingRequest.payload).order);
                 responseMessage = new Response(MessageAction.UPDATE_ORDER_STATUS, responseCode);
                 break;
             default:
@@ -70,11 +73,13 @@ public class RequestHandlingService {
     }
 
     private int updateOrderStatus(String username, String password, OrderModel order) {
-        if(!checkAuthorization(username, password))
+        if (!checkAuthorization(username, password)) {
             return Response.DENIED;
+        }
 
-        if(order.isIdNull() || order.getId() < 0)
+        if (order.isIdNull() || order.getId() < 0) {
             return Response.FAILED;
+        }
 
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
@@ -97,8 +102,9 @@ public class RequestHandlingService {
 
     private int addOrder(OrderModel order, String username, String password) {
         ClientModel client = getClient(username, password);
-        if(client == null)
+        if (client == null) {
             return Response.DENIED;
+        }
 
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
@@ -133,8 +139,9 @@ public class RequestHandlingService {
 
     private int addClient(ClientModel client, String password) {
         EntityManager entityManager = sessionFactory.createEntityManager();
-        if(!checkProposedUsername(client.getUsername()))
+        if (!checkProposedUsername(client.getUsername())) {
             return Response.FAILED;
+        }
         entityManager.getTransaction().begin();
 
 
@@ -183,15 +190,17 @@ public class RequestHandlingService {
             entityManager.close();
         }
 
-        if(fetchedClient.getUsername().equals(username))
+        if (fetchedClient.getUsername().equals(username)) {
             return true;
+        }
 
         return false;
     }
 
     private List<OrderModel> getOrders(String username, String password) {
-        if(!checkAuthorization(username,password))
+        if (!checkAuthorization(username, password)) {
             return null;
+        }
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
         List<OrderModel> fetchedOrders = null;

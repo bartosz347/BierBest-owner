@@ -28,7 +28,7 @@ public class BierBestTests {
 
     @BeforeClass
     public static void startSession() {
-        sessionFactory = Persistence.createEntityManagerFactory( "BierBest-owner" );
+        sessionFactory = Persistence.createEntityManagerFactory("BierBest-owner");
 
         // Add some test data
         try {
@@ -100,8 +100,7 @@ public class BierBestTests {
             entityManager.getTransaction().commit();
             entityManager.close();
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e);
         }
 
@@ -109,17 +108,17 @@ public class BierBestTests {
 
     @AfterClass
     public static void closeSession() {
-        if(sessionFactory != null && sessionFactory.isOpen())
+        if (sessionFactory != null && sessionFactory.isOpen()) {
             sessionFactory.close();
+        }
     }
-
 
 
     @Test
     public void GivenUniqueUsernameWhenCheckRequestedThenSuccessResponseCodeReceived() {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
-        Request req = new Request("a_nowak","", MessageAction.CHECK_USERNAME, null);
+        Request req = new Request("a_nowak", "", MessageAction.CHECK_USERNAME, null);
         BierBest.communication.Response resp;
         resp = handlingService.handleRequest(req);
 
@@ -132,7 +131,7 @@ public class BierBestTests {
     public void GivenDuplicateUsernameWhenCheckRequestedThenInvalidResponseCodeReceived() {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
-        Request req = new Request("k_kowalski","", MessageAction.CHECK_USERNAME, null);
+        Request req = new Request("k_kowalski", "", MessageAction.CHECK_USERNAME, null);
         BierBest.communication.Response resp;
         resp = handlingService.handleRequest(req);
 
@@ -156,7 +155,7 @@ public class BierBestTests {
         clientData.client.setEmail("test@test.com");
         //clientData.client.setRegistrationDate(new Date()); timestamp and java date don't match 1-1
 
-        Request req = new Request("a_nowak","secret_password", MessageAction.ADD_CLIENT, clientData);
+        Request req = new Request("a_nowak", "secret_password", MessageAction.ADD_CLIENT, clientData);
         Response resp;
         resp = handlingService.handleRequest(req);
 
@@ -164,8 +163,8 @@ public class BierBestTests {
         ClientModel fetchedClient = null;
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        fetchedClient = entityManager.createQuery( "from client where username = :username", ClientModel.class )
-                .setParameter("username",clientData.client.getUsername())
+        fetchedClient = entityManager.createQuery("from client where username = :username", ClientModel.class)
+                .setParameter("username", clientData.client.getUsername())
                 .getSingleResult();
 
         entityManager.getTransaction().commit();
@@ -173,7 +172,7 @@ public class BierBestTests {
 
         assertNotNull(fetchedClient);
         Assert.assertThat(clientData.client, samePropertyValuesAs(fetchedClient));
-        assertEquals(resp.messageAction,  MessageAction.ADD_CLIENT);
+        assertEquals(resp.messageAction, MessageAction.ADD_CLIENT);
         assertEquals(resp.getResponseCode(), resp.SUCCESS);
     }
 
@@ -192,7 +191,7 @@ public class BierBestTests {
         referenceClient.setEmail("test@test.com");
         //referenceClient.setRegistrationDate(new Date()); timestamp and java date don't match 1-1
 
-        Request req = new Request("a_nowak","secret_password", MessageAction.GET_CLIENT_DATA, null);
+        Request req = new Request("a_nowak", "secret_password", MessageAction.GET_CLIENT_DATA, null);
         Response resp;
         resp = handlingService.handleRequest(req);
 
@@ -207,7 +206,7 @@ public class BierBestTests {
     public void GivenInvalidClientCredentialsWhenClientDataRequestedThenAccesDeniedCodeIsReturned() {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
-        Request req = new Request("a_nowak","BAD_PASSWORD", MessageAction.GET_CLIENT_DATA, null);
+        Request req = new Request("a_nowak", "BAD_PASSWORD", MessageAction.GET_CLIENT_DATA, null);
         Response resp;
         resp = handlingService.handleRequest(req);
 
@@ -246,7 +245,7 @@ public class BierBestTests {
         assertNull(resp.payload);
         assertEquals(newOrder.getBeerInfo(), beerInfo);
         assertEquals("a_nowak", fetchedOrder.getClient().getUsername());
-        assertEquals(resp.messageAction,  MessageAction.ADD_ORDER);
+        assertEquals(resp.messageAction, MessageAction.ADD_ORDER);
         assertEquals(resp.getResponseCode(), resp.SUCCESS);
     }
 
@@ -279,11 +278,11 @@ public class BierBestTests {
 
         ClientModel referenceClient;
 
-        Request req = new Request("a_stephens","test", MessageAction.GET_CLIENT_ORDERS, null);
+        Request req = new Request("a_stephens", "test", MessageAction.GET_CLIENT_ORDERS, null);
         Response resp;
         resp = handlingService.handleRequest(req);
 
-        List<OrderModel> orders = ((Orders)resp.payload).orders;
+        List<OrderModel> orders = ((Orders) resp.payload).orders;
 
         assertNotNull(resp.payload);
         assertTrue(resp.payload instanceof Orders);
@@ -298,7 +297,7 @@ public class BierBestTests {
     public void GivenInvalidClientCredentialsWhenFetchingOrdersThenAccessDeniedCodeReturned() {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
-        Request req = new Request("a_stephens","bad_password", MessageAction.GET_CLIENT_ORDERS, null);
+        Request req = new Request("a_stephens", "bad_password", MessageAction.GET_CLIENT_ORDERS, null);
         Response resp;
         resp = handlingService.handleRequest(req);
 
@@ -329,13 +328,13 @@ public class BierBestTests {
         fetchedOrder = entityManager.createQuery("select p from product_order p JOIN client c ON c.id = p.client.id" +
                 " WHERE c.username = :a AND p.beerInfo.name = :b", OrderModel.class)
                 .setParameter("a", "a_stephens")
-                .setParameter("b",order.getBeerInfo().getName())
+                .setParameter("b", order.getBeerInfo().getName())
                 .getSingleResult();
         entityManager.close();
 
         order.setId(fetchedOrder.getId());
 
-        Request req = new Request("a_stephens","test", MessageAction.UPDATE_ORDER_STATUS, new OrderData(order));
+        Request req = new Request("a_stephens", "test", MessageAction.UPDATE_ORDER_STATUS, new OrderData(order));
         Response resp;
         resp = handlingService.handleRequest(req);
 
@@ -345,7 +344,7 @@ public class BierBestTests {
         fetchedOrder = entityManager.createQuery("select p from product_order p JOIN client c ON c.id = p.client.id" +
                 " WHERE c.username = :a AND p.beerInfo.name = :b", OrderModel.class)
                 .setParameter("a", "a_stephens")
-                .setParameter("b",order.getBeerInfo().getName())
+                .setParameter("b", order.getBeerInfo().getName())
                 .getSingleResult();
 
         entityManager.getTransaction().commit();
@@ -354,7 +353,7 @@ public class BierBestTests {
         assertNull(resp.payload);
         assertNotNull(fetchedOrder);
         assertEquals(order.getStatusClientSide(), fetchedOrder.getStatusClientSide());
-        assertEquals(resp.messageAction,  MessageAction.UPDATE_ORDER_STATUS);
+        assertEquals(resp.messageAction, MessageAction.UPDATE_ORDER_STATUS);
         assertEquals(resp.getResponseCode(), resp.SUCCESS);
     }
 
@@ -373,7 +372,7 @@ public class BierBestTests {
         order.setDate(new Date());
         order.setStatusShopSide("");
 
-        Request req = new Request("a_stephens","bad_password", MessageAction.UPDATE_ORDER_STATUS, new OrderData(order));
+        Request req = new Request("a_stephens", "bad_password", MessageAction.UPDATE_ORDER_STATUS, new OrderData(order));
         Response resp;
         resp = handlingService.handleRequest(req);
 
@@ -383,7 +382,7 @@ public class BierBestTests {
         fetchedOrder = entityManager.createQuery("select p from product_order p JOIN client c ON c.id = p.client.id" +
                 " WHERE c.username = :a AND p.beerInfo.name = :b", OrderModel.class)
                 .setParameter("a", "a_stephens")
-                .setParameter("b",order.getBeerInfo().getName())
+                .setParameter("b", order.getBeerInfo().getName())
                 .getSingleResult();
 
         entityManager.getTransaction().commit();

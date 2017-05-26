@@ -108,9 +108,8 @@ public class BierBestClientSimulator {
         order.setDate(new Date());
         order.setClient(client1);
 
-        requests.add(new Request("a_kowalski","pass1",MessageAction.ADD_CLIENT, new ClientData(client1)));
-        requests.add(new Request("a_kowalski","pass1",MessageAction.ADD_ORDER, new OrderData(order)));
-
+        requests.add(new Request("a_kowalski", "pass1", MessageAction.ADD_CLIENT, new ClientData(client1)));
+        requests.add(new Request("a_kowalski", "pass1", MessageAction.ADD_ORDER, new OrderData(order)));
 
 
         client1 = new ClientModel();
@@ -133,8 +132,8 @@ public class BierBestClientSimulator {
         order.setDate(new Date());
         order.setClient(client1);
 
-        requests.add(new Request("j_nowak","pass2",MessageAction.ADD_CLIENT, new ClientData(client1)));
-        requests.add(new Request("j_nowak","pass2",MessageAction.ADD_ORDER, new OrderData(order)));
+        requests.add(new Request("j_nowak", "pass2", MessageAction.ADD_CLIENT, new ClientData(client1)));
+        requests.add(new Request("j_nowak", "pass2", MessageAction.ADD_ORDER, new OrderData(order)));
 
         return requests;
     }

@@ -43,14 +43,14 @@ public class OrderViewModel {
 
 
     private IntegerProperty id = new SimpleIntegerProperty(this, "id", 0);
-    private StringProperty date = new SimpleStringProperty(this,"date","");
-    private StringProperty statusClientSide = new SimpleStringProperty(this,"statusClientSide","");
-    private StringProperty statusShopSide = new SimpleStringProperty(this,"statusShopSide","");
+    private StringProperty date = new SimpleStringProperty(this, "date", "");
+    private StringProperty statusClientSide = new SimpleStringProperty(this, "statusClientSide", "");
+    private StringProperty statusShopSide = new SimpleStringProperty(this, "statusShopSide", "");
 
-    private StringProperty beerName = new SimpleStringProperty(this,"beerName","");
-    private StringProperty beerPrice = new SimpleStringProperty(this,"beerPrice","");
-    private StringProperty beerURL = new SimpleStringProperty(this,"beerURL","");
-    private StringProperty beerImgURL = new SimpleStringProperty(this,"beerImgURL","");
+    private StringProperty beerName = new SimpleStringProperty(this, "beerName", "");
+    private StringProperty beerPrice = new SimpleStringProperty(this, "beerPrice", "");
+    private StringProperty beerURL = new SimpleStringProperty(this, "beerURL", "");
+    private StringProperty beerImgURL = new SimpleStringProperty(this, "beerImgURL", "");
 
 
     public ClientViewModel getClientViewModel() {

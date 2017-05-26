@@ -1,7 +1,6 @@
 package BierBest.order;
 
 
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -34,9 +33,10 @@ public class BeerInfo implements Serializable {
     }
 
     public void setPriceString(String priceString) {
-        if(!priceString.matches("^\\d{1,}[,|.]\\d\\d?$"))
+        if (!priceString.matches("^\\d{1,}[,|.]\\d\\d?$")) {
             throw new RuntimeException("invalid price format");
-        priceString = priceString.replace(',','.');
+        }
+        priceString = priceString.replace(',', '.');
         this.priceString = priceString;
     }
 

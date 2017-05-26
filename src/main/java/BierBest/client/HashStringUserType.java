@@ -15,7 +15,7 @@ public class HashStringUserType implements UserType, Serializable {
 
     @Override
     public int[] sqlTypes() {
-        return new int[] {StringType.INSTANCE.sqlType()};
+        return new int[]{StringType.INSTANCE.sqlType()};
     }
 
     @Override
@@ -25,12 +25,12 @@ public class HashStringUserType implements UserType, Serializable {
 
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
-        return Objects.equals( x, y );
+        return Objects.equals(x, y);
     }
 
     @Override
     public int hashCode(Object x) throws HibernateException {
-        return Objects.hashCode( x );
+        return Objects.hashCode(x);
     }
 
     @Override
@@ -48,9 +48,11 @@ public class HashStringUserType implements UserType, Serializable {
 
     @Override
     public Object deepCopy(Object value) throws HibernateException {
-        if (value == null) return null;
+        if (value == null) {
+            return null;
+        }
 
-        return new String((String)value);
+        return new String((String) value);
     }
 
     @Override
@@ -60,16 +62,16 @@ public class HashStringUserType implements UserType, Serializable {
 
     @Override
     public Serializable disassemble(Object value) throws HibernateException {
-        return (HashStringUserType) deepCopy( value );
+        return (HashStringUserType) deepCopy(value);
     }
 
     @Override
     public Object assemble(Serializable cached, Object owner) throws HibernateException {
-        return deepCopy( cached );
+        return deepCopy(cached);
     }
 
     @Override
     public Object replace(Object original, Object target, Object owner) throws HibernateException {
-        return deepCopy( original );
+        return deepCopy(original);
     }
 }

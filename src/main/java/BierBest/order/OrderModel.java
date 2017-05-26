@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity (name = "product_order")
+@Entity(name = "product_order")
 public class OrderModel implements Serializable {
 
     @Id

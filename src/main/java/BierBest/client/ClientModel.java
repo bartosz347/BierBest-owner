@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity (name = "client")
+@Entity(name = "client")
 public class ClientModel implements Serializable {
 
     public ClientModel() {
@@ -48,7 +48,7 @@ public class ClientModel implements Serializable {
     )
     protected String city;
 
-    @Column(name="address")
+    @Column(name = "address")
     protected String address;
 
     @NotNull
@@ -60,12 +60,12 @@ public class ClientModel implements Serializable {
     protected String email;
 
     @NotNull
-    @Column(name = "registration_date", columnDefinition="DATETIME")
+    @Column(name = "registration_date", columnDefinition = "DATETIME")
     @Temporal(TemporalType.TIMESTAMP)
     protected Date registrationDate;
 
     @Column(name = "hash", updatable = false)
-    @Type( type = "BierBest.client.HashStringUserType" )
+    @Type(type = "BierBest.client.HashStringUserType")
     protected String hash = "";
 
 

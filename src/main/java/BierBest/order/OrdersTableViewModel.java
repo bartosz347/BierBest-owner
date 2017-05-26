@@ -15,7 +15,7 @@ public class OrdersTableViewModel {
 
     public void load(boolean showRejected) {
         final GetOrdersTask getOrdersTask = new GetOrdersTask(MainApp.sessionFactory, showRejected);
-        getOrdersTask.setOnSucceeded(ev -> mainScreenView.setTableItems((ObservableList<OrderViewModel>)getOrdersTask.getValue()));
+        getOrdersTask.setOnSucceeded(ev -> mainScreenView.setTableItems((ObservableList<OrderViewModel>) getOrdersTask.getValue()));
         Thread backgroundThread = new Thread(getOrdersTask);
         backgroundThread.setDaemon(true);
         backgroundThread.start();
