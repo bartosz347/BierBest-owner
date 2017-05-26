@@ -30,17 +30,12 @@ public class BierBestClientSimulator extends Thread {
     public static final String SERVER_ADDRESS = "127.0.0.1";
 
     public static void main(String[] args) {
-        try {
             BierBestClientSimulator bierBestClientSimulator = new BierBestClientSimulator();
             bierBestClientSimulator.start();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        }
     }
 
-    public BierBestClientSimulator() throws NoSuchAlgorithmException, KeyManagementException {
+    @Override
+    public void run() {
         LOGGER.log(Level.INFO, "starting client");
 
         // Dumb trust manager that does not verify if we trust certificate's CA - temporary
@@ -59,8 +54,15 @@ public class BierBestClientSimulator extends Thread {
             }
         }};
 
-        SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-        sslContext.init(null, trustAllCertificates, null);
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null, trustAllCertificates, null);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
 
         try (
                 //Socket client = new Socket(SERVER_ADDRESS, PORT); // without SSL

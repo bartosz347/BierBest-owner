@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class MainApp extends Application {
@@ -37,17 +38,24 @@ public class MainApp extends Application {
     private static BierBestServer serverThread;
 
     public static void main(String[] args) {
+        HashMap<String, String> connectionProperties = new HashMap<>();
+        connectionProperties.put("javax.persistence.jdbc.url", "jdbc:mysql://" + args[0]);
+        connectionProperties.put("javax.persistence.jdbc.user", args[1]);
+        connectionProperties.put("javax.persistence.jdbc.password", args[2]);
+        if (args[5].equals("simulated")) {
+            connectionProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+        }
+        System.setProperty("javax.net.ssl.keyStore", args[3]);
+        System.setProperty("javax.net.ssl.keyStorePassword", args[4]);
+
         // Create an EMF
-        sessionFactory = Persistence.createEntityManagerFactory("BierBest-owner");
+        sessionFactory = Persistence.createEntityManagerFactory("BierBest-owner", connectionProperties);
         serverThread = new BierBestServer(sessionFactory);
         serverThread.start();
 
         // Launch client simulator that adds some sample data
-        try {
-            BierBestClientSimulator bierBestClientSimulator = new BierBestClientSimulator();
-            bierBestClientSimulator.start();
-        } catch (Exception e) {
-
+        if (args[5].equals("simulated")) {
+            new BierBestClientSimulator().start();
         }
 
         launch(args);
