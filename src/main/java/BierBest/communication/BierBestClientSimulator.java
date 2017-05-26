@@ -73,10 +73,12 @@ public class BierBestClientSimulator {
             }
 
 
-           Response incomingResponse;
+/*           Response incomingResponse;
             while ((incomingResponse = (Response) inFromServer.readObject()) != null) {
                // ignoring responses
-            }
+            }*/
+
+            Thread.sleep(7000);
             client.close();
         } catch (Exception e) {
             System.out.println(e);
@@ -111,6 +113,7 @@ public class BierBestClientSimulator {
         requests.add(new Request("a_kowalski","pass1",MessageAction.ADD_ORDER, new OrderData(order)));
 
 
+
         client1 = new ClientModel();
         client1.setFirstName("Jan");
         client1.setLastName("Nowak");
@@ -120,7 +123,6 @@ public class BierBestClientSimulator {
         client1.setEmail("j.nowak@test.com");
         client1.setPhoneNumber("+48444888999");
         client1.setRegistrationDate(new Date());
-
 
         order = new OrderModel();
         order.setStatusClientSide("new");
