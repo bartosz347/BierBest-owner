@@ -11,7 +11,7 @@
 
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>BierBest.client.ClientModel</class>
+        <class>bierbest.client.ClientModel</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>

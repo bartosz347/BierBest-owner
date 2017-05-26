@@ -1,13 +1,14 @@
-import BierBest.client.ClientModel;
-import BierBest.communication.Request;
-import BierBest.communication.RequestHandlingService;
-import BierBest.communication.Response;
-import BierBest.communication.payloads.ClientData;
-import BierBest.communication.payloads.MessageAction;
-import BierBest.communication.payloads.OrderData;
-import BierBest.communication.payloads.Orders;
-import BierBest.order.BeerInfo;
-import BierBest.order.OrderModel;
+import bierbest.client.ClientModel;
+import bierbest.communication.Request;
+import bierbest.communication.RequestHandlingService;
+import bierbest.communication.Response;
+import bierbest.communication.payloads.ClientData;
+import bierbest.communication.payloads.MessageAction;
+import bierbest.communication.payloads.OrderData;
+import bierbest.communication.payloads.Orders;
+import bierbest.order.BeerInfo;
+import bierbest.order.OrderModel;
+import javassist.bytecode.stackmap.TypeData;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -18,12 +19,14 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.*;
 
 public class BierBestTests {
-
+    private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
     private static EntityManagerFactory sessionFactory;
 
     @BeforeClass
@@ -101,7 +104,7 @@ public class BierBestTests {
             entityManager.close();
 
         } catch (Exception e) {
-            System.out.println(e);
+            LOGGER.log(Level.SEVERE, "exception when adding test data: " + e.getMessage());
         }
 
     }
@@ -119,7 +122,7 @@ public class BierBestTests {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
         Request req = new Request("a_nowak", "", MessageAction.CHECK_USERNAME, null);
-        BierBest.communication.Response resp;
+        Response resp;
         resp = handlingService.handleRequest(req);
 
         assertTrue(resp instanceof Response);
@@ -132,7 +135,7 @@ public class BierBestTests {
         RequestHandlingService handlingService = new RequestHandlingService(sessionFactory);
 
         Request req = new Request("k_kowalski", "", MessageAction.CHECK_USERNAME, null);
-        BierBest.communication.Response resp;
+        Response resp;
         resp = handlingService.handleRequest(req);
 
         assertTrue(resp instanceof Response);
