@@ -1,7 +1,7 @@
-##BierBest-owner
+## BierBest-owner
 
 ### Opis
-Aplikacja wspierająca proces zamawiania piwa przez sieć.
+Aplikacja wspiera proces zamawiania piwa przez sieć.
  Użytkownik korzystając z aplikacji "klient" (tworzona przez kolegę),
  rejestruje się i może złożyć zamówienie na wybrane przez siebie piwo.  
  Następnie właściciel sklepu potwierdza, czy może takie piwo zamówić w hurtowni oraz określa cenę.  
@@ -13,9 +13,9 @@ Aplikacja wspierająca proces zamawiania piwa przez sieć.
  Dane przesyłane między klientami a serwerem są szyfrowane (SSL/TLS), komunikacja odbywa się za pomocą socketów.  
  Aplikacja serwerowa korzysta z Hibernate'a i za jego pomocą przechowuje dane w bazie MySQL.
 
-###Uruchomienie
+### Uruchomienie
  - projekt Gradle
- - w katalogu src\main\resources umieścić plik konfiguracyjny `persistence.xml`
+ - w katalogu `src\main\resources` umieścić plik konfiguracyjny `persistence.xml`
  - w parametrach VM podać ścieżkę do keyStore (PKCS#12) oraz hasło do klucza:  
         `Djavax.net.ssl.keyStorePassword="" -Djavax.net.ssl.keyStore=""`
  - główna klasa to MainApp, tam znajduje się funkcja main
