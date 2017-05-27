@@ -29,7 +29,7 @@ Testy jednostkowe sprawdzają i demonstrują działanie komunikacji między serw
  `keystore_path` - scieżka do certyfikatu z kluczem w formacie PKCS#12  
  `keystore_password` - hasło do certyfikatu  
  
- Dodanie `simulated` jako ostatni parametr spowoduje usunięci i stworzenie na nowo tabel w bazie oraz uruchomienie symulatora klienta przy starcie programu  
+ Dodanie `simulated` jako ostatni parametr spowoduje usunięcie i stworzenie na nowo tabel w bazie oraz uruchomienie symulatora klienta przy starcie programu  
  Bez parametru `simulated`, aplikacja stworzy tabele w bazie tylko, jeśli nie istnieją
  
    
