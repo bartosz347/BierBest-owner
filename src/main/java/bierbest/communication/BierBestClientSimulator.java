@@ -26,17 +26,36 @@ import java.util.logging.Logger;
 public class BierBestClientSimulator extends Thread {
 
     private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
-    public static final int PORT = 4488;
-    public static final String SERVER_ADDRESS = "127.0.0.1";
+    private int port;
+    private String serverAddress;
+
+    public BierBestClientSimulator(String serverAddress, int port) {
+        this.port = port;
+        this.serverAddress = serverAddress;
+    }
 
     public static void main(String[] args) {
-            BierBestClientSimulator bierBestClientSimulator = new BierBestClientSimulator();
-            bierBestClientSimulator.start();
+        if (args.length != 2) {
+            printUsage();
+        } else {
+            int port = 0;
+            try {
+                port = Integer.parseInt(args[1]);
+                BierBestClientSimulator bierBestClientSimulator = new BierBestClientSimulator(args[0], port);
+                bierBestClientSimulator.start();
+            } catch (NumberFormatException e) {
+                printUsage();
+            }
+        }
+    }
+
+    public static void printUsage() {
+        System.out.println("BierBestClientSimulator <server address> <port>");
     }
 
     @Override
     public void run() {
-        LOGGER.log(Level.INFO, "starting client");
+        LOGGER.log(Level.INFO, "starting client connecting to: " + serverAddress + ":" + port);
 
         // Dumb trust manager that does not verify if we trust certificate's CA - temporary
         final TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager() {
@@ -66,7 +85,7 @@ public class BierBestClientSimulator extends Thread {
 
         try (
                 //Socket client = new Socket(SERVER_ADDRESS, PORT); // without SSL
-                Socket client = sslContext.getSocketFactory().createSocket(SERVER_ADDRESS, PORT);
+                Socket client = sslContext.getSocketFactory().createSocket(serverAddress, port);
                 ObjectOutputStream outToServer = new ObjectOutputStream(client.getOutputStream());
                 ObjectInputStream inFromServer = new ObjectInputStream(client.getInputStream());
 

@@ -43,6 +43,8 @@ public class MainApp extends Application {
     private static BierBestServer serverThread;
 
     public static void main(String[] args) {
+        if(args.length < 5)
+            printUsage();
         HashMap<String, String> connectionProperties = new HashMap<>();
         connectionProperties.put("javax.persistence.jdbc.url", "jdbc:mysql://" + args[0]);
         connectionProperties.put("javax.persistence.jdbc.user", args[1]);
@@ -60,17 +62,28 @@ public class MainApp extends Application {
         System.setProperty("javax.net.ssl.keyStore", args[3]);
         System.setProperty("javax.net.ssl.keyStorePassword", args[4]);
 
+        int port = 4488;
+        if(System.getProperty("bierbest.communication.port") != null) {
+            port = Integer.parseInt(System.getProperty("bierbest.communication.port"));
+        }
+
+
         // Create an EMF
         sessionFactory = Persistence.createEntityManagerFactory("BierBest-owner", connectionProperties);
-        serverThread = new BierBestServer(sessionFactory);
+        serverThread = new BierBestServer(port, sessionFactory);
         serverThread.start();
 
         // Launch client simulator that adds some sample data
         if (args[5].equals("simulated")) {
-            new BierBestClientSimulator().start();
+            new BierBestClientSimulator("127.0.0.1", port).start();
         }
 
         launch(args);
+    }
+
+    public static void printUsage() {
+        System.out.println("arguments: <db_address> <db_username> <db_password> <keystore_path> <keystore_password> [simulated]");
+        System.out.println("Server port set in bierbest.communication.port property, default: 4488");
     }
 
     @Override

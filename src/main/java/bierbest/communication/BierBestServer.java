@@ -21,11 +21,12 @@ public class BierBestServer extends Thread {
     //-Djavax.net.ssl.keyStorePassword="..." -Djavax.net.ssl.keyStore="..."
 
     private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
-    private static final int PORT = 4488;
+    private static int port;
     private ServerSocket serverSocket;
     private EntityManagerFactory sessionFactory;
 
-    public BierBestServer(EntityManagerFactory sessionFactory) {
+    public BierBestServer(int port, EntityManagerFactory sessionFactory) {
+        this.port = port;
         this.sessionFactory = sessionFactory;
     }
 
@@ -47,11 +48,11 @@ public class BierBestServer extends Thread {
 
     private void startServer() {
         RequestHandlingService requestHandlingService = new RequestHandlingService(sessionFactory);
-        LOGGER.log(Level.INFO, "starting server");
+        LOGGER.log(Level.INFO, "starting server on port "+ port);
 
         try (
                 //serverSocket = new ServerSocket(PORT); // without SSL
-                ServerSocket serverSocket = SSLServerSocketFactory.getDefault().createServerSocket(PORT);
+                ServerSocket serverSocket = SSLServerSocketFactory.getDefault().createServerSocket(port);
         ) {
             Socket clientSocket;
             this.serverSocket = serverSocket;
