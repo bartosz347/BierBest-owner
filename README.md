@@ -21,7 +21,9 @@ Testy jednostkowe sprawdzają i demonstrują działanie komunikacji między serw
 
 
 ### Uruchomienie programu
- - projekt Gradle/IntelliJ
+    ./gradlew jfxJar
+    java -jar ./build/jfx/app/BierBest-owner.jar <db_address> <db_username> <db_password> <keystore_path> <keystore_password> [simulated]
+
  - Argumenty programu `<db_address> <db_username> <db_password> <keystore_path> <keystore_password> [simulated]`
  - Opcjonalnie parametr VM `-Dbierbest.communication.port=<port_number>`
 
