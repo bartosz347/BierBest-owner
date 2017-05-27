@@ -32,7 +32,7 @@ public class MainApp extends Application {
 
         ((MainScreenView) fxmlLoader.getController()).mainApp = this;
 
-        primaryStage.getIcons().add(new Image("BierBest/images/icon.png"));
+        primaryStage.getIcons().add(new Image("bierbest/images/icon.png"));
         primaryStage.setTitle("BierBEST backoffice");
         primaryStage.setScene(new Scene(root, 750, 600));
 
@@ -104,7 +104,7 @@ public class MainApp extends Application {
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
         stage.setTitle("client details");
-        stage.getIcons().add(new Image("BierBest/images/icon.png"));
+        stage.getIcons().add(new Image("bierbest/images/icon.png"));
         ClientDetailsScreenView clientDetailsScreenView = fxmlLoader.getController();
         clientDetailsScreenView.setClientViewModel(clientViewModel);
         clientDetailsScreenView.setOwnStage(stage);

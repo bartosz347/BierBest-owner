@@ -38,13 +38,9 @@ dependencies {
 
 
 jfx {
-    // minimal requirement for jfxJar-task
     mainClass = 'bierbest.MainApp'
-
-    // minimal requirement for jfxNative-task
-    vendor = 'YourName'
-
-    additionalAppResources = 'src/main/resources'
-  copyAdditionalAppResourcesToJar = true
+    vendor = 'Bartosz'
+    jfxMainAppJarName = 'BierBest-owner.jar'
+    jfxAppOutputDir = "build/jfx/app"
 }
 

@@ -110,7 +110,7 @@ public class MainScreenView implements Initializable {
 
         if (!orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL().isEmpty()) {
             new Thread(() -> {
-                img = new Image("BierBest/images/placeholder.png");
+                img = new Image("bierbest/images/placeholder.png");
                 img = new Image(orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL());
                 Platform.runLater(() -> beerImageView.imageProperty().setValue(img));
             }).start();
