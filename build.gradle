@@ -1,3 +1,14 @@
+buildscript {
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+    }
+}
+
 version '1.0'
 
 apply plugin: 'java'
@@ -7,6 +18,8 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'javafx-gradle-plugin'
 
 dependencies {
     // https://mvnrepository.com/artifact/javax.validation/validation-api
@@ -22,3 +35,16 @@ dependencies {
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.195'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
+
+jfx {
+    // minimal requirement for jfxJar-task
+    mainClass = 'bierbest.MainApp'
+
+    // minimal requirement for jfxNative-task
+    vendor = 'YourName'
+
+    additionalAppResources = 'src/main/resources'
+  copyAdditionalAppResourcesToJar = true
+}
+
