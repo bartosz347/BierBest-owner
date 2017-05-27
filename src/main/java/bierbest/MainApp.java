@@ -49,7 +49,7 @@ public class MainApp extends Application {
         connectionProperties.put("javax.persistence.jdbc.url", "jdbc:mysql://" + args[0]);
         connectionProperties.put("javax.persistence.jdbc.user", args[1]);
         connectionProperties.put("javax.persistence.jdbc.password", args[2]);
-        if (args[5].equals("simulated")) {
+        if (args.length > 5 && args[5].equals("simulated")) {
             connectionProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
         } else {
             connectionProperties.put("javax.persistence.schema-generation.database.action", "create");
@@ -74,7 +74,7 @@ public class MainApp extends Application {
         serverThread.start();
 
         // Launch client simulator that adds some sample data
-        if (args[5].equals("simulated")) {
+        if (args.length > 5 && args[5].equals("simulated")) {
             new BierBestClientSimulator("127.0.0.1", port).start();
         }
 
