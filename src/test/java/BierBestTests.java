@@ -165,7 +165,6 @@ public class BierBestTests {
         clientData.client.setAddress("Słoneczna 14 m. 4");
         clientData.client.setPhoneNumber("+48111222333");
         clientData.client.setEmail("test@test.com");
-        //clientData.client.setRegistrationDate(new Date()); timestamp and java date don't match 1-1
 
         Request req = new Request("a_nowak", "secret_password", MessageAction.ADD_CLIENT, clientData);
         Response resp;
@@ -201,7 +200,6 @@ public class BierBestTests {
         referenceClient.setAddress("Słoneczna 14 m. 4");
         referenceClient.setPhoneNumber("+48111222333");
         referenceClient.setEmail("test@test.com");
-        //referenceClient.setRegistrationDate(new Date()); timestamp and java date don't match 1-1
 
         Request req = new Request("a_nowak", "secret_password", MessageAction.GET_CLIENT_DATA, null);
         Response resp;

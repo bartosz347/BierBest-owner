@@ -13,18 +13,27 @@ Aplikacja wspiera proces zamawiania piwa przez sieć.
  Dane przesyłane między klientami a serwerem są szyfrowane (SSL/TLS), komunikacja odbywa się za pomocą socketów.  
  Aplikacja serwerowa korzysta z Hibernate'a i za jego pomocą przechowuje dane w bazie MySQL.
 
-### Uruchomienie
- - projekt Gradle
- - w katalogu `src\main\resources` umieścić plik konfiguracyjny `persistence.xml`
- - w parametrach VM podać ścieżkę do keyStore (PKCS#12) oraz hasło do klucza:  
-        `-Djavax.net.ssl.keyStorePassword="" -Djavax.net.ssl.keyStore=""`
- - główna klasa to MainApp, tam znajduje się funkcja main
+
+### Testy
+Testy jednostkowe sprawdzają i demonstrują działanie komunikacji między serwerem a klientami.  
+
+    ./gradlew test  
+
+
+### Uruchomienie programu
+ - projekt Gradle/IntelliJ
+ - Argumenty programu `<db_address> <db_username> <db_password> <keystore_path> <keystore_password> [simulated]`
+ - Opcjonalnie parametr VM `-Dbierbest.communication.port=<port_number>`
+
  
- g
- W domyślnej konfiguracji aplikacja przy każdym uruchomieniu usunie poprzednie tabele i stworzy nowe. Za pomocą `BierBestClientSimulator` dodane zostaną testowe dane - tak jakby dodawał je użytkownik z aplikacji "klient". Za pomocą przycisku `Refresh` można wymusić pobranie danych z bazy.  
- Testy jednostkowe sprawdzają i demonstrują działanie komunikacji między serwerem a klientami.
+ `keystore_path` - scieżka do certyfikatu z kluczem w formacie PKCS#12  
+ `keystore_password` - hasło do certyfikatu  
+ 
+ Dodanie `simulated` jako ostatni parametr spowoduje usunięci i stworzenie na nowo tabel w bazie oraz uruchomienie symulatora klienta przy starcie programu  
+ Bez parametru `simulated`, aplikacja stworzy tabele w bazie tylko, jeśli nie istnieją
+ 
+   
+ 
  
       
  
- 
-
