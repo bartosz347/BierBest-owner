@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +32,15 @@ public class BierBestTests {
 
     @BeforeClass
     public static void startSession() {
-        sessionFactory = Persistence.createEntityManagerFactory("BierBest-owner");
+        HashMap<String, String> connectionProperties = new HashMap<>();
+        connectionProperties.put("javax.persistence.jdbc.driver", "org.h2.Driver");
+        connectionProperties.put("javax.persistence.jdbc.url", "jdbc:h2:mem:test");
+        connectionProperties.put("javax.persistence.jdbc.user", "sa");
+        connectionProperties.put("javax.persistence.jdbc.password", "");
+        connectionProperties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        connectionProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+        connectionProperties.put("hibernate.show_sql", "true");
+        sessionFactory = Persistence.createEntityManagerFactory("BierBest-owner", connectionProperties);
 
         // Add some test data
         try {

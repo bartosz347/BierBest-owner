@@ -11,14 +11,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javassist.bytecode.stackmap.TypeData;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class MainApp extends Application {
+    private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -44,6 +49,13 @@ public class MainApp extends Application {
         connectionProperties.put("javax.persistence.jdbc.password", args[2]);
         if (args[5].equals("simulated")) {
             connectionProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+        } else {
+            connectionProperties.put("javax.persistence.schema-generation.database.action", "create");
+        }
+        File file = new File(args[3]);
+        if (!file.exists()) {
+            LOGGER.log(Level.SEVERE, "keyStore file does not exist");
+            return;
         }
         System.setProperty("javax.net.ssl.keyStore", args[3]);
         System.setProperty("javax.net.ssl.keyStorePassword", args[4]);
