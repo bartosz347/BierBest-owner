@@ -36,7 +36,6 @@ public class HashStringUserType implements UserType, Serializable {
     @Override
     public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
         String val = rs.getString(names[0]);
-        //return val != null ? val.trim() : "";
         // hash is never retrieved from DB to model, so writing empty string
         return "";
     }

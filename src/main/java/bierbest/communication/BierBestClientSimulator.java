@@ -84,11 +84,9 @@ public class BierBestClientSimulator extends Thread {
         }
 
         try (
-                //Socket client = new Socket(SERVER_ADDRESS, PORT); // without SSL
                 Socket client = sslContext.getSocketFactory().createSocket(serverAddress, port);
                 ObjectOutputStream outToServer = new ObjectOutputStream(client.getOutputStream());
                 ObjectInputStream inFromServer = new ObjectInputStream(client.getInputStream());
-
         ) {
             LOGGER.log(Level.INFO, "client connected to " + client.getRemoteSocketAddress());
 

@@ -43,8 +43,9 @@ public class MainApp extends Application {
     private static BierBestServer serverThread;
 
     public static void main(String[] args) {
-        if(args.length < 5)
+        if (args.length < 5) {
             printUsage();
+        }
         HashMap<String, String> connectionProperties = new HashMap<>();
         connectionProperties.put("javax.persistence.jdbc.url", "jdbc:mysql://" + args[0]);
         connectionProperties.put("javax.persistence.jdbc.user", args[1]);

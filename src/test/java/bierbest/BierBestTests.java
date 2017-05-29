@@ -1,3 +1,5 @@
+package bierbest;
+
 import bierbest.client.ClientModel;
 import bierbest.communication.Request;
 import bierbest.communication.RequestHandlingService;

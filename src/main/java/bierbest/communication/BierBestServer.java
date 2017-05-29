@@ -12,14 +12,6 @@ import java.util.logging.Logger;
 
 
 public class BierBestServer extends Thread {
-
-    // PKCS#12 file containing certificate and private key
-    // setup here
-    //System.setProperty("javax.net.ssl.keyStore", "...");
-    //System.setProperty("javax.net.ssl.keyStorePassword", "...");
-    // or in VM options
-    //-Djavax.net.ssl.keyStorePassword="..." -Djavax.net.ssl.keyStore="..."
-
     private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
     private static int port;
     private ServerSocket serverSocket;
@@ -48,10 +40,9 @@ public class BierBestServer extends Thread {
 
     private void startServer() {
         RequestHandlingService requestHandlingService = new RequestHandlingService(sessionFactory);
-        LOGGER.log(Level.INFO, "starting server on port "+ port);
+        LOGGER.log(Level.INFO, "starting server on port " + port);
 
         try (
-                //serverSocket = new ServerSocket(PORT); // without SSL
                 ServerSocket serverSocket = SSLServerSocketFactory.getDefault().createServerSocket(port);
         ) {
             Socket clientSocket;
