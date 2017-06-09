@@ -43,7 +43,7 @@ public class MainApp extends Application {
     private static BierBestServer serverThread;
 
     public static void main(String[] args) {
-        if (args.length < 5) {
+      /*  if (args.length < 5) {
             printUsage();
         }
         HashMap<String, String> connectionProperties = new HashMap<>();
@@ -54,7 +54,7 @@ public class MainApp extends Application {
             connectionProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
         } else {
             connectionProperties.put("javax.persistence.schema-generation.database.action", "create");
-        }
+        }*/
         File file = new File(args[3]);
         if (!file.exists()) {
             LOGGER.log(Level.SEVERE, "keyStore file does not exist");
@@ -67,6 +67,18 @@ public class MainApp extends Application {
         if(System.getProperty("bierbest.communication.port") != null) {
             port = Integer.parseInt(System.getProperty("bierbest.communication.port"));
         }
+
+        // local DB setup
+
+        HashMap<String, String> connectionProperties = new HashMap<>();
+        connectionProperties.put("javax.persistence.jdbc.driver", "org.h2.Driver");
+        connectionProperties.put("javax.persistence.jdbc.url", "jdbc:h2:mem:test");
+        connectionProperties.put("javax.persistence.jdbc.user", "sa");
+        connectionProperties.put("javax.persistence.jdbc.password", "");
+        connectionProperties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        connectionProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+
+        //
 
 
         // Create an EMF
