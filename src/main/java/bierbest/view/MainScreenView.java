@@ -108,13 +108,14 @@ public class MainScreenView implements Initializable {
 
         clientSideStatusLabel.textProperty().bind(orderDetailsDisplayViewModel.getOrderViewModel().statusClientSideProperty());
 
-        if (!orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL().isEmpty()) {
-            new Thread(() -> {
-                img = new Image("bierbest/images/placeholder.png");
-                img = new Image(orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL());
-                Platform.runLater(() -> beerImageView.imageProperty().setValue(img));
-            }).start();
-        }
+        new Thread(() -> {
+            img = new Image("bierbest/images/placeholder.png");
+            String url = orderDetailsDisplayViewModel.getOrderViewModel().getBeerImgURL();
+            if(url != null && !url.isEmpty()) {
+                img = new Image(url);
+            }
+            Platform.runLater(() -> beerImageView.imageProperty().setValue(img));
+        }).start();
 
         beerNameLabel.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerName());
         beerURLHyperlink.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerURL());
