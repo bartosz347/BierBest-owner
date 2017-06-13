@@ -85,6 +85,8 @@ public class MainApp extends Application {
     public static void printUsage() {
         System.out.println("arguments: <db_address> <db_username> <db_password> <keystore_path> <keystore_password> [simulated]");
         System.out.println("Server port set in bierbest.communication.port property, default: 4488");
+        LOGGER.log(Level.SEVERE, "wrong arguments");
+        System.exit(-1);
     }
 
     @Override
