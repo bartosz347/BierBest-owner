@@ -27,7 +27,7 @@ public class BierBestServerThreadForClient extends Thread {
 
         try (
                 ObjectOutputStream outToClient = new ObjectOutputStream(clientSocket.getOutputStream());
-                ObjectInputStream inFromClient = new ObjectInputStream(clientSocket.getInputStream());
+                BierBestObjectInputStream inFromClient = new BierBestObjectInputStream(clientSocket.getInputStream());
         ) {
             Request incomingRequest;
             Response responseToSend;

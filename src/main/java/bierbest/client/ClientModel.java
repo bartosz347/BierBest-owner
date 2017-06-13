@@ -11,6 +11,7 @@ import java.util.Date;
 
 @Entity(name = "client")
 public class ClientModel implements Serializable {
+    private static final long serialVersionUID = 108L;
 
     public ClientModel() {
 

@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 @Embeddable
 public class BeerInfo implements Serializable {
+    private static final long serialVersionUID = 104L;
 
     @Column(name = "beer_name")
     protected String name;
