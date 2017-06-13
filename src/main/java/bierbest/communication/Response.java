@@ -6,6 +6,7 @@ import bierbest.communication.payloads.Payload;
 import java.io.Serializable;
 
 public class Response implements Serializable {
+    private static final long serialVersionUID = 105L;
     public static final int SUCCESS = 1;
     public static final int INVALID = 0;
     public static final int FAILED = -1;

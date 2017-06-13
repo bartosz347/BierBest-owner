@@ -9,6 +9,7 @@ import java.util.Date;
 
 @Entity(name = "product_order")
 public class OrderModel implements Serializable {
+    private static final long serialVersionUID = 107L;
 
     @Id
     @GeneratedValue
@@ -34,6 +35,8 @@ public class OrderModel implements Serializable {
     @Embedded
     protected BeerInfo beerInfo;
 
+    @Column(name = "quantity")
+    protected Integer quantity;
 
     public Integer getId() {
         return id;
@@ -85,5 +88,13 @@ public class OrderModel implements Serializable {
 
     public void setBeerInfo(BeerInfo beerInfo) {
         this.beerInfo = beerInfo;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }
