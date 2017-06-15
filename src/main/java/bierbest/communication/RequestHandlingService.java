@@ -3,6 +3,7 @@ package bierbest.communication;
 import bierbest.client.ClientModel;
 import bierbest.communication.payloads.*;
 import bierbest.order.OrderModel;
+import bierbest.view.MainScreenView;
 import javassist.bytecode.stackmap.TypeData;
 
 import javax.persistence.EntityManager;
@@ -20,9 +21,11 @@ import java.util.logging.Logger;
 public class RequestHandlingService {
     private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
     private EntityManagerFactory sessionFactory;
+    private MainScreenView mainScreenView;
 
     public RequestHandlingService(EntityManagerFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+        this.mainScreenView = null;
     }
 
     public Response handleRequest(Request incomingRequest) {
@@ -55,6 +58,9 @@ public class RequestHandlingService {
             case ADD_ORDER:
                 responseCode = addOrder(((OrderData) incomingRequest.payload).order, incomingRequest.getUsername(), incomingRequest.getPassword());
                 responseMessage = new Response(MessageAction.ADD_ORDER, responseCode);
+                if (responseCode == Response.SUCCESS && this.mainScreenView != null) {
+                    mainScreenView.updateOrdersList();
+                }
                 break;
             case GET_CLIENT_ORDERS:
                 List<OrderModel> orders = getOrders(incomingRequest.getUsername(), incomingRequest.getPassword());
@@ -227,5 +233,9 @@ public class RequestHandlingService {
             e.printStackTrace();
         }
         return hash;
+    }
+
+    public void setMainScreenView(MainScreenView mainScreenView) {
+        this.mainScreenView = mainScreenView;
     }
 }

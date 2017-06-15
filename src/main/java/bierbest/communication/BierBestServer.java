@@ -1,5 +1,6 @@
 package bierbest.communication;
 
+import bierbest.view.MainScreenView;
 import javassist.bytecode.stackmap.TypeData;
 
 import javax.net.ssl.SSLServerSocketFactory;
@@ -16,6 +17,8 @@ public class BierBestServer extends Thread {
     private static int port;
     private ServerSocket serverSocket;
     private EntityManagerFactory sessionFactory;
+    private MainScreenView mainScreenView;
+    private RequestHandlingService requestHandlingService;
 
     public BierBestServer(int port, EntityManagerFactory sessionFactory) {
         this.port = port;
@@ -39,7 +42,7 @@ public class BierBestServer extends Thread {
     }
 
     private void startServer() {
-        RequestHandlingService requestHandlingService = new RequestHandlingService(sessionFactory);
+        requestHandlingService = new RequestHandlingService(sessionFactory);
         LOGGER.log(Level.INFO, "starting server on port " + port);
 
         try (
@@ -59,5 +62,10 @@ public class BierBestServer extends Thread {
                 LOGGER.log(Level.INFO, "server error");
             }
         }
+    }
+
+    public void setMainScreenView(MainScreenView mainScreenView) {
+        this.mainScreenView = mainScreenView;
+        requestHandlingService.setMainScreenView(mainScreenView);
     }
 }

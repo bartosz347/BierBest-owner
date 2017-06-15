@@ -13,32 +13,19 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javassist.bytecode.stackmap.TypeData;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class MainApp extends Application {
     private static final Logger LOGGER = Logger.getLogger(TypeData.ClassName.class.getName());
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
-        Parent root = fxmlLoader.load();
-
-        ((MainScreenView) fxmlLoader.getController()).mainApp = this;
-
-        primaryStage.getIcons().add(new Image("bierbest/images/icon.png"));
-        primaryStage.setTitle("BierBEST backoffice");
-        primaryStage.setScene(new Scene(root, 750, 600));
-
-        primaryStage.show();
-    }
-
     public static EntityManagerFactory sessionFactory;
     private static BierBestServer serverThread;
 
@@ -46,31 +33,50 @@ public class MainApp extends Application {
         if (args.length < 5) {
             printUsage();
         }
-        HashMap<String, String> connectionProperties = new HashMap<>();
+        Map connectionProperties = new HashMap<>();
         connectionProperties.put("javax.persistence.jdbc.url", "jdbc:mysql://" + args[0]);
         connectionProperties.put("javax.persistence.jdbc.user", args[1]);
         connectionProperties.put("javax.persistence.jdbc.password", args[2]);
-        if (args.length > 5 && args[5].equals("simulated")) {
-            connectionProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
-        } else {
-            connectionProperties.put("javax.persistence.schema-generation.database.action", "create");
-        }
+        connectionProperties.put("javax.persistence.schema-generation.database.action", "none");
+
         File file = new File(args[3]);
         if (!file.exists()) {
             LOGGER.log(Level.SEVERE, "keyStore file does not exist");
-            return;
+            printUsage();
         }
         System.setProperty("javax.net.ssl.keyStore", args[3]);
         System.setProperty("javax.net.ssl.keyStorePassword", args[4]);
 
         int port = 4488;
-        if(System.getProperty("bierbest.communication.port") != null) {
+        if (System.getProperty("bierbest.communication.port") != null) {
             port = Integer.parseInt(System.getProperty("bierbest.communication.port"));
         }
 
-
         // Create an EMF
-        sessionFactory = Persistence.createEntityManagerFactory("BierBest-owner", connectionProperties);
+        try {
+            sessionFactory = Persistence.createEntityManagerFactory("BierBest-owner", connectionProperties);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "cannot open DB connection " + e.getMessage());
+            System.exit(-1);
+        }
+
+        if (args.length > 5 && args[5].equals("simulated")) {
+            connectionProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+            LOGGER.log(Level.INFO, "simulated run, dropping and creating db schema");
+        } else {
+            EntityManager entityManager = sessionFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            if (entityManager.createNativeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'client'").getResultList().size() < 1
+                    || entityManager.createNativeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'client'").getResultList().size() < 1) {
+                connectionProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+                LOGGER.log(Level.INFO, "one or more tables do not exist, recreating db schema");
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        }
+
+
+        Persistence.generateSchema("BierBest-owner", connectionProperties);
         serverThread = new BierBestServer(port, sessionFactory);
         serverThread.start();
 
@@ -90,9 +96,24 @@ public class MainApp extends Application {
     }
 
     @Override
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
+        Parent root = fxmlLoader.load();
+
+        ((MainScreenView) fxmlLoader.getController()).mainApp = this;
+        serverThread.setMainScreenView(((MainScreenView) fxmlLoader.getController()));
+
+        primaryStage.getIcons().add(new Image("bierbest/images/icon.png"));
+        primaryStage.setTitle("BierBest backoffice");
+        primaryStage.setScene(new Scene(root, 750, 600));
+
+        primaryStage.show();
+    }
+
+    @Override
     public void stop() throws Exception {
-        sessionFactory.close();
         serverThread.close();
+        sessionFactory.close();
     }
 
     public void showClientDetails(ClientViewModel clientViewModel, boolean allowEditing) {

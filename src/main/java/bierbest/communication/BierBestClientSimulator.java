@@ -118,6 +118,7 @@ public class BierBestClientSimulator extends Thread {
 
         OrderModel order = new OrderModel();
         order.setStatusClientSide("new");
+        order.setQuantity(1);
         BeerInfo beerInfo = new BeerInfo();
         beerInfo.setName("Pamperifko");
         beerInfo.setURL("https://example.com/pamperifko");
@@ -142,6 +143,7 @@ public class BierBestClientSimulator extends Thread {
 
         order = new OrderModel();
         order.setStatusClientSide("new");
+        order.setQuantity(3);
         beerInfo = new BeerInfo();
         beerInfo.setName("Kormoran");
         beerInfo.setURL("https://example.com/Kormoran");

@@ -58,7 +58,7 @@ public class MainScreenView implements Initializable {
     @FXML
     private Label beerNameLabel;
     @FXML
-    private Hyperlink beerURLHyperlink;
+    private Label quantityLabel;
     @FXML
     private TextField beerPriceField;
     @FXML
@@ -66,6 +66,9 @@ public class MainScreenView implements Initializable {
 
     @FXML
     private CheckMenuItem showRejectedCheck;
+
+    @FXML
+    private Button refreshButton;
 
     private Image img;
 
@@ -79,7 +82,6 @@ public class MainScreenView implements Initializable {
                 handleShowClientDetails();
             }
         });
-        beerURLHyperlink.setOnMouseClicked(event -> mainApp.getHostServices().showDocument(beerURLHyperlink.getText()));
 
         orderIdColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         clientNameColumn.setCellValueFactory(cellData -> cellData.getValue().getClientViewModel().nameProperty());
@@ -118,7 +120,7 @@ public class MainScreenView implements Initializable {
         }).start();
 
         beerNameLabel.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerName());
-        beerURLHyperlink.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerURL());
+        quantityLabel.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().quantityProperty().getValue().toString());
         beerPriceField.textProperty().setValue(orderDetailsDisplayViewModel.getOrderViewModel().getBeerPrice());
         beerStatusBox.setValue(orderDetailsDisplayViewModel.getOrderViewModel().getStatusShopSide());
     }
@@ -149,6 +151,7 @@ public class MainScreenView implements Initializable {
 
     @FXML
     private void handleRefreshOrdersList() {
+        refreshButton.setDisable(true);
         ordersTable.getSelectionModel().clearSelection();
         ordersTableViewModel.load(showRejectedCheck.isSelected());
     }
@@ -156,6 +159,14 @@ public class MainScreenView implements Initializable {
     public void setTableItems(ObservableList<OrderViewModel> list) {
         ordersTable.setItems(list);
         refresh();
+    }
+
+    public void updateOrdersList() {
+        handleRefreshOrdersList();
+    }
+
+    public void unlockRefresh() {
+        refreshButton.setDisable(false);
     }
 
 

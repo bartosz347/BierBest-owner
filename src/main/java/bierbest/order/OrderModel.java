@@ -36,7 +36,8 @@ public class OrderModel implements Serializable {
     protected BeerInfo beerInfo;
 
     @Column(name = "quantity")
-    protected Integer quantity;
+    @NotNull
+    protected Integer quantity = 0;
 
 
     public Integer getId() {

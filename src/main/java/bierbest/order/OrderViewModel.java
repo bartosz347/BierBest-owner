@@ -37,7 +37,7 @@ public class OrderViewModel {
 
         setBeerName(order.getBeerInfo().getName());
         setBeerPrice(order.getBeerInfo().getPriceString());
-        setBeerURL(order.getBeerInfo().getURL());
+        setQuantity(order.getQuantity());
         setBeerImgURL(order.getBeerInfo().getImgURL());
     }
 
@@ -49,8 +49,8 @@ public class OrderViewModel {
 
     private StringProperty beerName = new SimpleStringProperty(this, "beerName", "");
     private StringProperty beerPrice = new SimpleStringProperty(this, "beerPrice", "");
-    private StringProperty beerURL = new SimpleStringProperty(this, "beerURL", "");
     private StringProperty beerImgURL = new SimpleStringProperty(this, "beerImgURL", "");
+    private IntegerProperty quantity = new SimpleIntegerProperty(this, "quantity", 0);
 
 
     public ClientViewModel getClientViewModel() {
@@ -133,16 +133,16 @@ public class OrderViewModel {
         this.beerPrice.set(beerPrice);
     }
 
-    public String getBeerURL() {
-        return beerURL.get();
+    public int getQuantity() {
+        return quantity.get();
     }
 
-    public StringProperty beerURLProperty() {
-        return beerURL;
+    public IntegerProperty quantityProperty() {
+        return quantity;
     }
 
-    public void setBeerURL(String beerURL) {
-        this.beerURL.set(beerURL);
+    public void setQuantity(int quantity) {
+        this.quantity.set(quantity);
     }
 
     public String getBeerImgURL() {

@@ -34,6 +34,9 @@ public class BeerInfo implements Serializable {
     }
 
     public void setPriceString(String priceString) {
+        if (priceString.matches("^\\d{1,}$")) {
+            priceString = priceString.concat(".00");
+        }
         if (!priceString.matches("^\\d{1,}[,|.]\\d\\d?$")) {
             throw new RuntimeException("invalid price format");
         }
